@@ -1,0 +1,69 @@
+version: 2
+
+project_name: bizzmod
+
+before:
+  hooks:
+    - go mod tidy
+
+builds:
+  - id: bizzmod
+    binary: bizzmod
+    main: ./main.go
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - linux
+      - darwin
+      - windows
+    goarch:
+      - amd64
+      - arm64
+    ldflags:
+      - -s -w
+
+archives:
+  - id: default
+    formats: [tar.gz]
+    format_overrides:
+      - goos: windows
+        formats: [zip]
+    name_template: "{{ .ProjectName }}_{{ .Version }}_{{ .Os }}_{{ .Arch }}"
+
+checksum:
+  name_template: checksums.txt
+
+changelog:
+  use: git
+  sort: asc
+  filters:
+    exclude:
+      - '^docs:'
+      - '^test:'
+
+release:
+  github:
+    owner: killia
+    name: bizzmod-cli
+  draft: false
+  prerelease: auto
+
+brews:
+  - name: bizzmod
+    repository:
+      owner: killia
+      name: homebrew-tap
+    homepage: https://github.com/killia/bizzmod-cli
+    description: Bizzmod CLI for /api/v1/external endpoints
+    test: |
+      system "#{bin}/bizzmod --help"
+    install: |
+      bin.install "bizzmod"
+
+scoops:
+  - repository:
+      owner: killia
+      name: scoop-bucket
+    homepage: https://github.com/killia/bizzmod-cli
+    description: Bizzmod CLI for /api/v1/external endpoints
+    license: Proprietary
