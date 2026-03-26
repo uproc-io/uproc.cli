@@ -113,6 +113,8 @@ Example:
 bizzmod request GET /api/v1/external/modules
 ```
 
+Output is always rendered as readable tables/lists (never raw JSON).
+
 ### Module commands
 
 ```bash
@@ -126,6 +128,22 @@ bizzmod module upload <module_slug> <collection_name> <file_path>
 bizzmod module webhook <module_slug> <collection_name> <payload_json>
 ```
 
+### Interactive mode
+
+```bash
+bizzmod interactive
+```
+
+Inside interactive mode, run commands without the binary name:
+
+```text
+bizzmod> module list
+bizzmod> module get order-track
+bizzmod> request GET /api/v1/external/modules
+bizzmod> help
+bizzmod> exit
+```
+
 ## Notes
 
 - All calls send headers required by backend external auth:
@@ -133,4 +151,4 @@ bizzmod module webhook <module_slug> <collection_name> <payload_json>
   - `x-customer-domain`
   - `x-user-email`
 - `request` allows calling any current/future external endpoint without waiting for a dedicated subcommand.
-- JSON responses are pretty-printed automatically when response body is valid JSON.
+- CLI output is always displayed in list/table format (never JSON output).
