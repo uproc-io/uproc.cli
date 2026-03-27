@@ -18,6 +18,10 @@ func mustClient() (*api.Client, error) {
 	if err != nil {
 		return nil, err
 	}
+	return mustClientFromConfig(cfg)
+}
+
+func mustClientFromConfig(cfg config.Config) (*api.Client, error) {
 	if err := config.Validate(cfg); err != nil {
 		return nil, err
 	}

@@ -29,6 +29,11 @@ When adding new CLI commands:
 - Keep a generic raw command (currently `request`) to avoid endpoint coverage gaps.
 - Update `README.md` command list in the same change set.
 
+Install command policy:
+- `install` must consume `/api/v1/external/install` and render a full installation plan.
+- `install` supports `--dry-run` to print every step without executing server changes.
+- Default/expected operational usage is dry-run preview first; any future execution mode must be explicit and opt-in.
+
 Distribution notes:
 - Release automation is defined in `.github/workflows/release.yml` and `.goreleaser.yml`.
 - Artifacts are produced for Linux/macOS/Windows on `amd64` + `arm64`.

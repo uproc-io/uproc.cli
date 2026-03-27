@@ -144,6 +144,14 @@ bizzmod> help
 bizzmod> exit
 ```
 
+### Install plan (dry-run)
+
+```bash
+bizzmod install <CUSTOMER_API_KEY> --dry-run
+```
+
+This command fetches `/api/v1/external/install` and shows the full installation plan (release versions, required services, and ordered steps) without executing changes on the server.
+
 ## Notes
 
 - All calls send headers required by backend external auth:
