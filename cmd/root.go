@@ -12,6 +12,7 @@ func NewRootCmd() *cobra.Command {
 	rootCmd.AddCommand(newRequestCmd())
 	rootCmd.AddCommand(newModuleCmd())
 	rootCmd.AddCommand(newInstallCmd())
+	rootCmd.AddCommand(newUpdateCmd())
 	rootCmd.AddCommand(newInteractiveCmd())
 
 	return rootCmd

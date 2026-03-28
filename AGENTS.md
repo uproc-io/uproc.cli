@@ -56,7 +56,8 @@ Code style and safety
 Changelog policy
 --------------------------------------------------------------------------------
 
-- If a CLI changelog is introduced, record behavior/contract changes in it within the same change set.
-- Include verification commands once canonical test/build commands are documented.
+- `cli/CHANGELOG.md` is mandatory.
+- Any functional change in `cli/` (commands, flags, args, request contracts, auth flow, output behavior, docs semantics) must include a matching `cli/CHANGELOG.md` entry in the same change set.
+- Include verification commands in each changelog entry (`go test ./...`, `go vet ./...`, `go build -o bizzmod` at minimum).
 
 Keep this file updated when CLI commands, conventions, or release workflows are formalized.

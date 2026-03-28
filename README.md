@@ -152,6 +152,14 @@ bizzmod install <CUSTOMER_API_KEY> --dry-run
 
 This command fetches `/api/v1/external/install` and shows the full installation plan (release versions, required services, and ordered steps) without executing changes on the server.
 
+### Update check (dry-run only)
+
+```bash
+bizzmod update check <CUSTOMER_API_KEY>
+```
+
+This command validates update readiness using `/api/v1/external/install?dry_run=true` plus local read-only checks (docker, dokploy, required services, required env vars, and health endpoints). It never executes deployment/apply actions.
+
 ## Notes
 
 - All calls send headers required by backend external auth:
