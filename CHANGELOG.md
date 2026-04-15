@@ -5,6 +5,9 @@ All notable changes in `bizzmod-cli` should be documented in this file.
 ## 2026-04-15
 
 ### Added
+- Added `release_tag.sh` to automatically compute and push the next semantic version tag (`vX.Y.Z`) with `patch` as default and optional `--minor` / `--major` bump modes.
+
+### Added
 - Added a new `admin` command group with external-only management operations for users, customers, credentials, and modules.
 - Added `list`, `get`, `create`, and `update` subcommands for `users`, `customers`, and `credentials`, plus `list` and `get` for `modules`, all routed to `/api/v1/external/admin/*`.
 - Added `admin tickets list` and `admin tickets get <ticket_id>` mapped to `/api/v1/external/tickets/all` and `/api/v1/external/tickets/{ticket_id}/detail`.
@@ -29,6 +32,7 @@ All notable changes in `bizzmod-cli` should be documented in this file.
 - Overview rendering now strictly consumes backend overview sections (`kpis`, `charts`, `tables`) and no longer depends on legacy `labels`/`series` fallbacks.
 
 ### Verification
+- `./release_tag.sh --help`
 - `go test ./...`
 - `go vet ./...`
 - `go build -o bizzmod`

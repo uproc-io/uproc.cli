@@ -74,6 +74,15 @@ git tag v0.1.0
 git push origin v0.1.0
 ```
 
+Or use the automatic tag script (patch by default):
+
+```bash
+./release_tag.sh
+# optional:
+./release_tag.sh --minor
+./release_tag.sh --major
+```
+
 GitHub Actions (`.github/workflows/release.yml`) will publish the release.
 
 ## Commands
