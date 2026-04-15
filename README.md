@@ -27,8 +27,8 @@ You can also store credentials with `login` (recommended for local usage).
 
 ```bash
 go mod tidy
-go build -o bizzmod
-./bizzmod --help
+go build -o uproc-processes
+./uproc-processes --help
 ```
 
 Or run directly:
@@ -90,7 +90,7 @@ GitHub Actions (`.github/workflows/release.yml`) will publish the release.
 ### Auth
 
 ```bash
-bizzmod login
+uproc-processes login
 ```
 
 Stores credentials in OS user config path (`bizzmod-cli/config.json`).
@@ -105,7 +105,7 @@ Stores credentials in OS user config path (`bizzmod-cli/config.json`).
 Example using environment values:
 
 ```bash
-bizzmod login
+uproc-processes login
 ```
 
 `login` always lets you review values and keep/update each one.
@@ -114,13 +114,13 @@ When any value changes, CLI validates credentials by calling `/api/v1/external/m
 ### Raw external request
 
 ```bash
-bizzmod request <METHOD> <PATH> [JSON_BODY]
+uproc-processes request <METHOD> <PATH> [JSON_BODY]
 ```
 
 Example:
 
 ```bash
-bizzmod request GET /api/v1/external/modules
+uproc-processes request GET /api/v1/external/modules
 ```
 
 Output is always rendered as readable tables/lists (never raw JSON).
@@ -129,51 +129,54 @@ When backend response includes `{ success, message, data }`, CLI prints only `da
 ### Module commands
 
 ```bash
-bizzmod module list
-bizzmod module get <module_slug>
-bizzmod module overview <module_slug> [kpis|charts|tables]
-bizzmod module collections <module_slug>
-bizzmod module collection <module_slug> <collection_name> [--page 1 --sort-field key --sort-order asc --filter-field key --filter-value val]
-bizzmod module data <module_slug> <collection_name> [--page 1 --sort-field key --sort-order asc --filter-field key --filter-value val]
-bizzmod module upload <module_slug> <collection_name> <file_path>
-bizzmod module webhook <module_slug> <collection_name> <payload_json>
+uproc-processes module list
+uproc-processes module get <module_slug>
+uproc-processes module overview <module_slug> [kpis|charts|tables]
+uproc-processes module collections <module_slug>
+uproc-processes module collection <module_slug> <collection_name> [--page 1 --sort-field key --sort-order asc --filter-field key --filter-value val]
+uproc-processes module data <module_slug> <collection_name> [--page 1 --sort-field key --sort-order asc --filter-field key --filter-value val]
+uproc-processes module upload <module_slug> <collection_name> <file_path>
+uproc-processes module upload <module_slug> <collection_name> "*.pdf"
+uproc-processes module webhook <module_slug> <collection_name> <payload_json>
 ```
+
+`module upload` accepts one or more file paths and glob masks. When a mask matches multiple files, CLI uploads each file and prints per-file progress and result.
 
 ### Admin commands
 
 ```bash
-bizzmod admin users list [--customer-id 1]
-bizzmod admin users get <user_id>
+uproc-processes admin users list [--customer-id 1]
+uproc-processes admin users get <user_id>
 
-bizzmod admin customers list
-bizzmod admin customers get <customer_id>
+uproc-processes admin customers list
+uproc-processes admin customers get <customer_id>
 
-bizzmod admin credentials list [--customer-id 1 --category ai --type api_key]
-bizzmod admin credentials get <credential_id>
+uproc-processes admin credentials list [--customer-id 1 --category ai --type api_key]
+uproc-processes admin credentials get <credential_id>
 
-bizzmod admin modules list
-bizzmod admin modules get <module_slug>
+uproc-processes admin modules list
+uproc-processes admin modules get <module_slug>
 
-bizzmod admin tickets list
-bizzmod admin tickets get <ticket_id>
+uproc-processes admin tickets list
+uproc-processes admin tickets get <ticket_id>
 
-bizzmod admin logs --module-slug <module_slug> [--level all --page 1]
-bizzmod admin ai-requests [--customer-id 1 --module-slug financial-reconciliation --page 1 --limit 25]
-bizzmod admin changelog
+uproc-processes admin logs --module-slug <module_slug> [--level all --page 1]
+uproc-processes admin ai-requests [--customer-id 1 --module-slug financial-reconciliation --page 1 --limit 25]
+uproc-processes admin changelog
 ```
 
 Admin create/update subcommands are currently hidden from help output.
 Admin create/update commands run interactive contract mode (contracts fetched from API):
 
 ```bash
-bizzmod admin users create
-bizzmod admin users update
-bizzmod admin customers create
-bizzmod admin customers update
-bizzmod admin credentials create
-bizzmod admin credentials update
-bizzmod admin tickets create
-bizzmod admin tickets update
+uproc-processes admin users create
+uproc-processes admin users update
+uproc-processes admin customers create
+uproc-processes admin customers update
+uproc-processes admin credentials create
+uproc-processes admin credentials update
+uproc-processes admin tickets create
+uproc-processes admin tickets update
 ```
 
 All admin commands use external API endpoints under `/api/v1/external/admin/*`, except ticket commands that use `/api/v1/external/tickets/*`.
@@ -182,23 +185,23 @@ Admin list output uses backend list contracts (`/api/v1/external/admin/contracts
 ### Interactive mode
 
 ```bash
-bizzmod interactive
+uproc-processes interactive
 ```
 
 Inside interactive mode, run commands without the binary name:
 
 ```text
-bizzmod> module list
-bizzmod> module get order-track
-bizzmod> request GET /api/v1/external/modules
-bizzmod> help
-bizzmod> exit
+uproc-processes> module list
+uproc-processes> module get order-track
+uproc-processes> request GET /api/v1/external/modules
+uproc-processes> help
+uproc-processes> exit
 ```
 
 ### Install plan (dry-run)
 
 ```bash
-bizzmod install <CUSTOMER_API_KEY> --dry-run
+uproc-processes install <CUSTOMER_API_KEY> --dry-run
 ```
 
 This command fetches `/api/v1/external/install` and shows the full installation plan (release versions, required services, and ordered steps) without executing changes on the server.
@@ -206,7 +209,7 @@ This command fetches `/api/v1/external/install` and shows the full installation 
 ### Update check (dry-run only)
 
 ```bash
-bizzmod update check <CUSTOMER_API_KEY>
+uproc-processes update check <CUSTOMER_API_KEY>
 ```
 
 This command validates update readiness using `/api/v1/external/install?dry_run=true` plus local read-only checks (docker, dokploy, required services, required env vars, and health endpoints). It never executes deployment/apply actions.

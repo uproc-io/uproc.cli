@@ -11,11 +11,11 @@ import (
 func newInteractiveCmd() *cobra.Command {
 	return &cobra.Command{
 		Use:   "interactive",
-		Short: "Interactive shell for bizzmod commands",
+		Short: "Interactive shell for uproc-processes commands",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			scanner := bufio.NewScanner(cmd.InOrStdin())
 			for {
-				fmt.Fprint(cmd.OutOrStdout(), "bizzmod> ")
+				fmt.Fprint(cmd.OutOrStdout(), "uproc-processes> ")
 				if !scanner.Scan() {
 					break
 				}
@@ -29,7 +29,7 @@ func newInteractiveCmd() *cobra.Command {
 				case "exit", "quit":
 					return nil
 				case "help":
-					fmt.Fprintln(cmd.OutOrStdout(), "Type any bizzmod command without the binary name.")
+					fmt.Fprintln(cmd.OutOrStdout(), "Type any uproc-processes command without the binary name.")
 					fmt.Fprintln(cmd.OutOrStdout(), "Examples: module list, module get order-track, request GET /api/v1/external/modules")
 					fmt.Fprintln(cmd.OutOrStdout(), "Use 'exit' or 'quit' to leave interactive mode.")
 					continue

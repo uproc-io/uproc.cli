@@ -1,14 +1,14 @@
 version: 2
 
-project_name: bizzmod
+project_name: uproc-processes
 
 before:
   hooks:
     - go mod tidy
 
 builds:
-  - id: bizzmod
-    binary: bizzmod
+  - id: uproc-processes
+    binary: uproc-processes
     main: ./main.go
     env:
       - CGO_ENABLED=0
@@ -49,16 +49,16 @@ release:
   prerelease: auto
 
 brews:
-  - name: bizzmod
+  - name: uproc-processes
     repository:
       owner: killia
       name: homebrew-tap
     homepage: https://github.com/killia/bizzmod-cli
     description: Bizzmod CLI for /api/v1/external endpoints
     test: |
-      system "#{bin}/bizzmod --help"
+      system "#{bin}/uproc-processes --help"
     install: |
-      bin.install "bizzmod"
+      bin.install "uproc-processes"
 
 scoops:
   - repository:

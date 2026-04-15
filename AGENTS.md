@@ -16,7 +16,7 @@ Build, lint, and test commands
 --------------------------------------------------------------------------------
 
 - Install deps: `go mod tidy`
-- Build binary: `go build -o bizzmod`
+- Build binary: `go build -o uproc-processes`
 - Run without build: `go run . --help`
 - Format: `gofmt -w .`
 - Lint (if available): `go vet ./...`
@@ -58,6 +58,6 @@ Changelog policy
 
 - `cli/CHANGELOG.md` is mandatory.
 - Any functional change in `cli/` (commands, flags, args, request contracts, auth flow, output behavior, docs semantics) must include a matching `cli/CHANGELOG.md` entry in the same change set.
-- Include verification commands in each changelog entry (`go test ./...`, `go vet ./...`, `go build -o bizzmod` at minimum).
+- Include verification commands in each changelog entry (`go test ./...`, `go vet ./...`, `go build -o uproc-processes` at minimum).
 
 Keep this file updated when CLI commands, conventions, or release workflows are formalized.

@@ -7,6 +7,8 @@ import (
 	"net/url"
 	"os"
 	"path/filepath"
+	"sort"
+	"strings"
 
 	"github.com/spf13/cobra"
 )
@@ -225,39 +227,128 @@ func newModuleDataCmd() *cobra.Command {
 
 func newModuleUploadCmd() *cobra.Command {
 	return &cobra.Command{
-		Use:   "upload <module_slug> <collection_name> <file_path>",
-		Short: "Upload file to a module collection",
-		Args:  cobra.ExactArgs(3),
+		Use:   "upload <module_slug> <collection_name> <file_path_or_pattern...>",
+		Short: "Upload one or more files to a module collection",
+		Args:  cobra.MinimumNArgs(3),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			client, err := mustClient()
 			if err != nil {
 				return err
 			}
 
-			content, err := os.ReadFile(args[2])
+			uploadPaths, err := resolveUploadPaths(args[2:])
 			if err != nil {
 				return err
 			}
 
-			payload := map[string]string{
-				"file_name": filepath.Base(args[2]),
-				"content":   base64.StdEncoding.EncodeToString(content),
-			}
-
-			b, err := json.Marshal(payload)
-			if err != nil {
-				return err
-			}
+			total := len(uploadPaths)
+			success := 0
+			failed := make([]string, 0)
 
 			path := fmt.Sprintf(
 				"/api/v1/external/modules/%s/collections/%s/inputs/file",
 				args[0],
 				args[1],
 			)
-			body, status, reqErr := client.Do("POST", path, b)
-			return printResponse(cmd, body, status, reqErr)
+
+			for index, filePath := range uploadPaths {
+				fmt.Fprintf(cmd.OutOrStdout(), "[%d/%d] uploading: %s\n", index+1, total, filePath)
+
+				content, readErr := os.ReadFile(filePath)
+				if readErr != nil {
+					fmt.Fprintf(cmd.OutOrStdout(), "FAIL %s -> %v\n", filePath, readErr)
+					failed = append(failed, filePath)
+					continue
+				}
+
+				payload := map[string]string{
+					"file_name": filepath.Base(filePath),
+					"content":   base64.StdEncoding.EncodeToString(content),
+				}
+
+				b, marshalErr := json.Marshal(payload)
+				if marshalErr != nil {
+					fmt.Fprintf(cmd.OutOrStdout(), "FAIL %s -> %v\n", filePath, marshalErr)
+					failed = append(failed, filePath)
+					continue
+				}
+
+				_, _, reqErr := client.Do("POST", path, b)
+				if reqErr != nil {
+					fmt.Fprintf(cmd.OutOrStdout(), "FAIL %s -> %v\n", filePath, reqErr)
+					failed = append(failed, filePath)
+					continue
+				}
+
+				success++
+				fmt.Fprintf(cmd.OutOrStdout(), "OK   %s\n", filePath)
+			}
+
+			fmt.Fprintf(cmd.OutOrStdout(), "Uploaded: %d/%d\n", success, total)
+			if len(failed) > 0 {
+				return fmt.Errorf("%d upload(s) failed", len(failed))
+			}
+
+			return nil
 		},
 	}
+}
+
+func hasGlobPattern(value string) bool {
+	return strings.ContainsAny(value, "*?[")
+}
+
+func resolveUploadPaths(inputs []string) ([]string, error) {
+	resolved := make([]string, 0)
+	seen := make(map[string]struct{})
+
+	for _, input := range inputs {
+		if hasGlobPattern(input) {
+			matches, err := filepath.Glob(input)
+			if err != nil {
+				return nil, fmt.Errorf("invalid glob pattern %q: %w", input, err)
+			}
+			if len(matches) == 0 {
+				return nil, fmt.Errorf("no files matched pattern %q", input)
+			}
+
+			for _, match := range matches {
+				info, err := os.Stat(match)
+				if err != nil {
+					return nil, fmt.Errorf("cannot access %q: %w", match, err)
+				}
+				if info.IsDir() {
+					continue
+				}
+				if _, exists := seen[match]; exists {
+					continue
+				}
+				seen[match] = struct{}{}
+				resolved = append(resolved, match)
+			}
+			continue
+		}
+
+		info, err := os.Stat(input)
+		if err != nil {
+			return nil, fmt.Errorf("cannot access %q: %w", input, err)
+		}
+		if info.IsDir() {
+			return nil, fmt.Errorf("path %q is a directory; provide files or file patterns", input)
+		}
+		if _, exists := seen[input]; exists {
+			continue
+		}
+		seen[input] = struct{}{}
+		resolved = append(resolved, input)
+	}
+
+	if len(resolved) == 0 {
+		return nil, fmt.Errorf("no files to upload")
+	}
+
+	sort.Strings(resolved)
+	return resolved, nil
 }
 
 func newModuleWebhookCmd() *cobra.Command {

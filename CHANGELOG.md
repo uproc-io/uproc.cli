@@ -6,6 +6,7 @@ All notable changes in `bizzmod-cli` should be documented in this file.
 
 ### Added
 - Added `release_tag.sh` to automatically compute and push the next semantic version tag (`vX.Y.Z`) with `patch` as default and optional `--minor` / `--major` bump modes.
+- Added glob pattern support to `module upload`, allowing masks like `"*.pdf"` and multiple file inputs in a single command.
 
 ### Added
 - Added a new `admin` command group with external-only management operations for users, customers, credentials, and modules.
@@ -30,12 +31,13 @@ All notable changes in `bizzmod-cli` should be documented in this file.
 - Replaced `module kpis` with `module overview <module_slug> [kpis|charts|tables]` and added terminal-adapted overview rendering.
 - Overview output now renders KPIs, charts (including donut/pie visual summaries), and tables in a readable terminal format.
 - Overview rendering now strictly consumes backend overview sections (`kpis`, `charts`, `tables`) and no longer depends on legacy `labels`/`series` fallbacks.
+- `module upload` now prints per-file progress and result (`uploading`, `OK`, `FAIL`) and shows a final uploaded summary.
 
 ### Verification
 - `./release_tag.sh --help`
 - `go test ./...`
 - `go vet ./...`
-- `go build -o bizzmod`
+- `go build -o uproc-processes`
 
 ## 2026-03-28
 
@@ -49,4 +51,4 @@ All notable changes in `bizzmod-cli` should be documented in this file.
 ### Verification
 - `go test ./...`
 - `go vet ./...`
-- `go build -o bizzmod`
+- `go build -o uproc-processes`
