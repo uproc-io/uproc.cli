@@ -114,6 +114,7 @@ bizzmod request GET /api/v1/external/modules
 ```
 
 Output is always rendered as readable tables/lists (never raw JSON).
+When backend response includes `{ success, message, data }`, CLI prints only `data`.
 
 ### Module commands
 
@@ -127,6 +128,45 @@ bizzmod module data <module_slug> <collection_name> [--page 1 --sort-field key -
 bizzmod module upload <module_slug> <collection_name> <file_path>
 bizzmod module webhook <module_slug> <collection_name> <payload_json>
 ```
+
+### Admin commands
+
+```bash
+bizzmod admin users list [--customer-id 1]
+bizzmod admin users get <user_id>
+
+bizzmod admin customers list
+bizzmod admin customers get <customer_id>
+
+bizzmod admin credentials list [--customer-id 1 --category ai --type api_key]
+bizzmod admin credentials get <credential_id>
+
+bizzmod admin modules list
+bizzmod admin modules get <module_slug>
+
+bizzmod admin tickets list
+bizzmod admin tickets get <ticket_id>
+
+bizzmod admin logs --module-slug <module_slug> [--level all --page 1]
+bizzmod admin ai-requests [--customer-id 1 --module-slug financial-reconciliation --page 1 --limit 25]
+bizzmod admin changelog
+```
+
+Admin create/update subcommands are currently hidden from help output.
+Admin create/update commands run interactive contract mode (contracts fetched from API):
+
+```bash
+bizzmod admin users create
+bizzmod admin users update
+bizzmod admin customers create
+bizzmod admin customers update
+bizzmod admin credentials create
+bizzmod admin credentials update
+bizzmod admin tickets create
+bizzmod admin tickets update
+```
+
+All admin commands use external API endpoints under `/api/v1/external/admin/*`, except ticket commands that use `/api/v1/external/tickets/*`.
 
 ### Interactive mode
 

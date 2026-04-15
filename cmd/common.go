@@ -66,7 +66,51 @@ func formatStructuredOutput(body []byte) string {
 		return ""
 	}
 
-	return renderValue(parsed, 0)
+	normalized := normalizeOutputPayload(parsed)
+	if normalized == nil {
+		return ""
+	}
+
+	return renderValue(normalized, 0)
+}
+
+func normalizeOutputPayload(parsed any) any {
+	rootMap, ok := parsed.(map[string]any)
+	if !ok {
+		return parsed
+	}
+
+	if data, ok := rootMap["data"]; ok {
+		return extractRowsLike(data)
+	}
+
+	if _, hasSuccess := rootMap["success"]; hasSuccess {
+		if detail, hasDetail := rootMap["detail"]; hasDetail {
+			return detail
+		}
+		if message, hasMessage := rootMap["message"]; hasMessage {
+			return message
+		}
+		return nil
+	}
+
+	return extractRowsLike(rootMap)
+}
+
+func extractRowsLike(value any) any {
+	mapped, ok := value.(map[string]any)
+	if !ok {
+		return value
+	}
+
+	if rows, hasRows := mapped["rows"]; hasRows {
+		return rows
+	}
+	if items, hasItems := mapped["items"]; hasItems {
+		return items
+	}
+
+	return value
 }
 
 func renderValue(v any, indent int) string {
