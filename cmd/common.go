@@ -104,6 +104,13 @@ func extractRowsLike(value any) any {
 	}
 
 	if rows, hasRows := mapped["rows"]; hasRows {
+		if rowList, isList := rows.([]any); isList {
+			if columnsRaw, hasColumns := mapped["columns"]; hasColumns {
+				if ordered := orderRowsByColumns(rowList, columnsRaw); ordered != nil {
+					return ordered
+				}
+			}
+		}
 		return rows
 	}
 	if items, hasItems := mapped["items"]; hasItems {
@@ -111,6 +118,69 @@ func extractRowsLike(value any) any {
 	}
 
 	return value
+}
+
+func orderRowsByColumns(rows []any, columnsRaw any) []any {
+	columnsList, ok := columnsRaw.([]any)
+	if !ok || len(columnsList) == 0 {
+		return nil
+	}
+
+	orderedKeys := make([]string, 0, len(columnsList))
+	seen := make(map[string]struct{})
+	for _, col := range columnsList {
+		colMap, ok := col.(map[string]any)
+		if !ok {
+			continue
+		}
+		key := strings.TrimSpace(fmt.Sprintf("%v", colMap["key"]))
+		if key == "" {
+			continue
+		}
+		if _, exists := seen[key]; exists {
+			continue
+		}
+		seen[key] = struct{}{}
+		orderedKeys = append(orderedKeys, key)
+	}
+
+	if len(orderedKeys) == 0 {
+		return nil
+	}
+
+	orderedRows := make([]any, 0, len(rows))
+	for _, item := range rows {
+		rowMap, ok := item.(map[string]any)
+		if !ok {
+			orderedRows = append(orderedRows, item)
+			continue
+		}
+
+		ordered := map[string]any{}
+		used := make(map[string]struct{})
+		for _, key := range orderedKeys {
+			if value, exists := rowMap[key]; exists {
+				ordered[key] = value
+				used[key] = struct{}{}
+			}
+		}
+
+		remainingKeys := make([]string, 0, len(rowMap))
+		for key := range rowMap {
+			if _, exists := used[key]; exists {
+				continue
+			}
+			remainingKeys = append(remainingKeys, key)
+		}
+		sort.Strings(remainingKeys)
+		for _, key := range remainingKeys {
+			ordered[key] = rowMap[key]
+		}
+
+		orderedRows = append(orderedRows, ordered)
+	}
+
+	return orderedRows
 }
 
 func renderValue(v any, indent int) string {

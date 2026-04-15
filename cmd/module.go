@@ -19,7 +19,7 @@ func newModuleCmd() *cobra.Command {
 
 	moduleCmd.AddCommand(newModuleListCmd())
 	moduleCmd.AddCommand(newModuleGetCmd())
-	moduleCmd.AddCommand(newModuleKpisCmd())
+	moduleCmd.AddCommand(newModuleOverviewCmd())
 	moduleCmd.AddCommand(newModuleCollectionsCmd())
 	moduleCmd.AddCommand(newModuleCollectionCmd())
 	moduleCmd.AddCommand(newModuleDataCmd())
@@ -61,19 +61,41 @@ func newModuleGetCmd() *cobra.Command {
 	}
 }
 
-func newModuleKpisCmd() *cobra.Command {
+func newModuleOverviewCmd() *cobra.Command {
 	return &cobra.Command{
-		Use:   "kpis <module_slug>",
-		Short: "Get module KPIs",
-		Args:  cobra.ExactArgs(1),
+		Use:   "overview <module_slug> [section]",
+		Short: "Get module overview (kpis, charts, tables)",
+		Args:  cobra.RangeArgs(1, 2),
 		RunE: func(cmd *cobra.Command, args []string) error {
+			section := "all"
+			if len(args) == 2 {
+				section = args[1]
+			}
+			if !isValidOverviewSection(section) {
+				return fmt.Errorf("invalid section %q. allowed: kpis, charts, tables", section)
+			}
+
 			client, err := mustClient()
 			if err != nil {
 				return err
 			}
 			path := fmt.Sprintf("/api/v1/external/modules/%s/kpis", args[0])
 			body, status, reqErr := client.Do("GET", path, nil)
-			return printResponse(cmd, body, status, reqErr)
+			if reqErr != nil {
+				return printResponse(cmd, body, status, reqErr)
+			}
+
+			rendered, renderErr := formatModuleOverviewOutput(body, args[0], section)
+			if renderErr != nil {
+				return printResponse(cmd, body, status, nil)
+			}
+
+			if rendered == "" {
+				return printResponse(cmd, body, status, nil)
+			}
+
+			fmt.Fprintln(cmd.OutOrStdout(), rendered)
+			return nil
 		},
 	}
 }

@@ -28,6 +28,7 @@ type adminContract struct {
 	PathTemplate         string                    `json:"path_template"`
 	PathParams           []adminContractField      `json:"path_params"`
 	Fields               []adminContractField      `json:"fields"`
+	VisibleFields        []string                  `json:"visible_fields"`
 	PayloadTemplate      map[string]any            `json:"payload_template"`
 	Taxonomy             map[string]any            `json:"taxonomy"`
 	ConfigDefaultsByType map[string]map[string]any `json:"config_defaults_by_type"`

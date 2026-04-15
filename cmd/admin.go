@@ -46,18 +46,11 @@ func newAdminUsersListCmd() *cobra.Command {
 		Use:   "list",
 		Short: "List admin users",
 		RunE: func(cmd *cobra.Command, args []string) error {
-			client, err := mustClient()
-			if err != nil {
-				return err
-			}
-
 			path := "/api/v1/external/admin/users"
 			if customerID > 0 {
 				path = fmt.Sprintf("%s?customer_id=%d", path, customerID)
 			}
-
-			body, status, reqErr := client.Do("GET", path, nil)
-			return printResponse(cmd, body, status, reqErr)
+			return runAdminListWithContract(cmd, "users", "GET", path)
 		},
 	}
 
@@ -126,13 +119,7 @@ func newAdminCustomersListCmd() *cobra.Command {
 		Use:   "list",
 		Short: "List admin customers",
 		RunE: func(cmd *cobra.Command, args []string) error {
-			client, err := mustClient()
-			if err != nil {
-				return err
-			}
-
-			body, status, reqErr := client.Do("GET", "/api/v1/external/admin/customers", nil)
-			return printResponse(cmd, body, status, reqErr)
+			return runAdminListWithContract(cmd, "customers", "GET", "/api/v1/external/admin/customers")
 		},
 	}
 }
@@ -202,11 +189,6 @@ func newAdminCredentialsListCmd() *cobra.Command {
 		Use:   "list",
 		Short: "List admin credentials",
 		RunE: func(cmd *cobra.Command, args []string) error {
-			client, err := mustClient()
-			if err != nil {
-				return err
-			}
-
 			queryParts := []string{}
 			if customerID > 0 {
 				queryParts = append(queryParts, fmt.Sprintf("customer_id=%d", customerID))
@@ -222,9 +204,7 @@ func newAdminCredentialsListCmd() *cobra.Command {
 			if len(queryParts) > 0 {
 				path = fmt.Sprintf("%s?%s", path, strings.Join(queryParts, "&"))
 			}
-
-			body, status, reqErr := client.Do("GET", path, nil)
-			return printResponse(cmd, body, status, reqErr)
+			return runAdminListWithContract(cmd, "credentials", "GET", path)
 		},
 	}
 
@@ -363,13 +343,7 @@ func newAdminTicketsListCmd() *cobra.Command {
 		Use:   "list",
 		Short: "List support tickets",
 		RunE: func(cmd *cobra.Command, args []string) error {
-			client, err := mustClient()
-			if err != nil {
-				return err
-			}
-
-			body, status, reqErr := client.Do("GET", "/api/v1/external/tickets/all", nil)
-			return printResponse(cmd, body, status, reqErr)
+			return runAdminListWithContract(cmd, "tickets", "GET", "/api/v1/external/tickets/all")
 		},
 	}
 }

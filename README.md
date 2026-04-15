@@ -89,7 +89,7 @@ Stores credentials in OS user config path (`bizzmod-cli/config.json`).
 `login` reads credentials in this order:
 - command arguments (optional, still supported)
 - environment variables (`.env` or shell env)
-- interactive prompt for missing values
+- interactive prompt step-by-step for all values (shows current value as default)
 
 `CUSTOMER_DOMAIN` must be the customer domain identifier (not a URL).
 
@@ -99,7 +99,8 @@ Example using environment values:
 bizzmod login
 ```
 
-If `.env` is missing or incomplete, `login` prompts for required values and writes a new `.env` file.
+`login` always lets you review values and keep/update each one.
+When any value changes, CLI validates credentials by calling `/api/v1/external/modules` before saving.
 
 ### Raw external request
 
@@ -121,7 +122,7 @@ When backend response includes `{ success, message, data }`, CLI prints only `da
 ```bash
 bizzmod module list
 bizzmod module get <module_slug>
-bizzmod module kpis <module_slug>
+bizzmod module overview <module_slug> [kpis|charts|tables]
 bizzmod module collections <module_slug>
 bizzmod module collection <module_slug> <collection_name> [--page 1 --sort-field key --sort-order asc --filter-field key --filter-value val]
 bizzmod module data <module_slug> <collection_name> [--page 1 --sort-field key --sort-order asc --filter-field key --filter-value val]
@@ -167,6 +168,7 @@ bizzmod admin tickets update
 ```
 
 All admin commands use external API endpoints under `/api/v1/external/admin/*`, except ticket commands that use `/api/v1/external/tickets/*`.
+Admin list output uses backend list contracts (`/api/v1/external/admin/contracts/<resource>/list`) to keep visible columns aligned with Admin UI tables.
 
 ### Interactive mode
 

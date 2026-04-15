@@ -21,6 +21,12 @@ All notable changes in `bizzmod-cli` should be documented in this file.
 - Admin read commands now rely on the same external auth header model as other CLI commands (`x-api-key`, `x-customer-domain`, `x-user-email`) after backend auth alignment; no dedicated superadmin-email header is required.
 - CLI output rendering now prints only response data payloads (`data`, `data.rows`, or equivalent), hiding response envelope keys like `success`, `message`, `columns`, and `header`.
 - Admin create/update commands no longer accept inline payload args; they always run interactive mode and fetch the contract from API before prompting.
+- Admin list commands (`users`, `customers`, `credentials`, `tickets`) now fetch list contracts and enforce backend-provided `visible_fields` so CLI list output matches admin table-visible columns.
+- `login` interactive flow now runs step-by-step for all credentials when no args are provided, showing current values as defaults and allowing keep-or-update per field.
+- `login` now validates updated credentials by calling `/api/v1/external/modules` whenever any value changes, and only then persists `.env`/config.
+- Replaced `module kpis` with `module overview <module_slug> [kpis|charts|tables]` and added terminal-adapted overview rendering.
+- Overview output now renders KPIs, charts (including donut/pie visual summaries), and tables in a readable terminal format.
+- Overview rendering now strictly consumes backend overview sections (`kpis`, `charts`, `tables`) and no longer depends on legacy `labels`/`series` fallbacks.
 
 ### Verification
 - `go test ./...`

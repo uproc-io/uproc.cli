@@ -3,7 +3,6 @@ package cmd
 import (
 	"bufio"
 	"fmt"
-	"os"
 	"strings"
 
 	"bizzmod-cli/internal/config"
@@ -16,7 +15,8 @@ func newLoginCmd() *cobra.Command {
 		Short: "Save API credentials from args or environment",
 		Args:  cobra.RangeArgs(0, 4),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			cfg := config.FromEnv()
+			currentCfg := config.FromEnv()
+			cfg := currentCfg
 
 			if len(args) > 0 {
 				if len(args) != 4 {
@@ -28,24 +28,34 @@ func newLoginCmd() *cobra.Command {
 					CustomerDomain: args[2],
 					UserEmail:      args[3],
 				}
-			}
-
-			if len(args) == 0 && missingAny(cfg) {
-				interactiveCfg, err := promptMissingFields(cfg, cmd)
+			} else {
+				interactiveCfg, err := promptReviewFields(cfg, cmd)
 				if err != nil {
 					return err
 				}
 				cfg = interactiveCfg
-				if err := config.SaveDotEnv(cfg, ".env"); err != nil {
+			}
+
+			changed := hasConfigChanged(currentCfg, cfg)
+			if changed {
+				if err := validateExternalCredentials(cfg); err != nil {
 					return err
 				}
-				fmt.Fprintln(cmd.OutOrStdout(), "ok: .env created")
+			}
+
+			if err := config.SaveDotEnv(cfg, ".env"); err != nil {
+				return err
 			}
 
 			if err := config.Save(cfg); err != nil {
 				return err
 			}
-			fmt.Fprintln(cmd.OutOrStdout(), "ok: credentials saved")
+
+			if changed {
+				fmt.Fprintln(cmd.OutOrStdout(), "ok: credentials saved and validated")
+			} else {
+				fmt.Fprintln(cmd.OutOrStdout(), "ok: credentials unchanged")
+			}
 			return nil
 		},
 	}
@@ -53,70 +63,96 @@ func newLoginCmd() *cobra.Command {
 	return cmd
 }
 
-func missingAny(cfg config.Config) bool {
-	return strings.TrimSpace(cfg.APIURL) == "" ||
-		strings.TrimSpace(cfg.CustomerAPIKey) == "" ||
-		strings.TrimSpace(cfg.CustomerDomain) == "" ||
-		strings.TrimSpace(cfg.UserEmail) == ""
-}
+func promptReviewFields(cfg config.Config, cmd *cobra.Command) (config.Config, error) {
+	reader := bufio.NewReader(cmd.InOrStdin())
 
-func promptMissingFields(cfg config.Config, cmd *cobra.Command) (config.Config, error) {
-	reader := bufio.NewReader(os.Stdin)
+	apiURL, err := promptWithDefault(reader, cmd, "BIZZMOD_API_URL", cfg.APIURL)
+	if err != nil {
+		return cfg, err
+	}
+	cfg.APIURL = apiURL
 
-	if strings.TrimSpace(cfg.APIURL) == "" {
-		value, err := prompt(reader, cmd, "BIZZMOD_API_URL")
-		if err != nil {
-			return cfg, err
+	for {
+		domain, promptErr := promptWithDefault(reader, cmd, "CUSTOMER_DOMAIN", cfg.CustomerDomain)
+		if promptErr != nil {
+			return cfg, promptErr
 		}
-		cfg.APIURL = value
+		if strings.Contains(domain, "://") || strings.Contains(domain, "/") {
+			fmt.Fprintln(cmd.OutOrStdout(), "CUSTOMER_DOMAIN must be the customer domain value, not a URL")
+			continue
+		}
+		cfg.CustomerDomain = domain
+		break
 	}
 
-	if strings.TrimSpace(cfg.CustomerDomain) == "" {
-		for {
-			value, err := prompt(reader, cmd, "CUSTOMER_DOMAIN")
-			if err != nil {
-				return cfg, err
-			}
-			if strings.Contains(value, "://") || strings.Contains(value, "/") {
-				fmt.Fprintln(cmd.OutOrStdout(), "CUSTOMER_DOMAIN must be the customer domain value, not a URL")
-				continue
-			}
-			cfg.CustomerDomain = value
-			break
-		}
+	apiKey, err := promptWithDefault(reader, cmd, "CUSTOMER_API_KEY", cfg.CustomerAPIKey)
+	if err != nil {
+		return cfg, err
 	}
+	cfg.CustomerAPIKey = apiKey
 
-	if strings.TrimSpace(cfg.CustomerAPIKey) == "" {
-		value, err := prompt(reader, cmd, "CUSTOMER_API_KEY")
-		if err != nil {
-			return cfg, err
-		}
-		cfg.CustomerAPIKey = value
+	userEmail, err := promptWithDefault(reader, cmd, "CUSTOMER_USER_EMAIL", cfg.UserEmail)
+	if err != nil {
+		return cfg, err
 	}
-
-	if strings.TrimSpace(cfg.UserEmail) == "" {
-		value, err := prompt(reader, cmd, "CUSTOMER_USER_EMAIL")
-		if err != nil {
-			return cfg, err
-		}
-		cfg.UserEmail = value
-	}
+	cfg.UserEmail = userEmail
 
 	return cfg, nil
 }
 
-func prompt(reader *bufio.Reader, cmd *cobra.Command, field string) (string, error) {
+func promptWithDefault(reader *bufio.Reader, cmd *cobra.Command, field string, current string) (string, error) {
+	current = strings.TrimSpace(current)
 	for {
-		fmt.Fprintf(cmd.OutOrStdout(), "%s: ", field)
+		if current == "" {
+			fmt.Fprintf(cmd.OutOrStdout(), "%s: ", field)
+		} else {
+			fmt.Fprintf(cmd.OutOrStdout(), "%s [%s]: ", field, current)
+		}
 		line, err := reader.ReadString('\n')
 		if err != nil {
 			return "", err
 		}
 		value := strings.TrimSpace(line)
 		if value == "" {
+			if current != "" {
+				return current, nil
+			}
 			fmt.Fprintln(cmd.OutOrStdout(), "value is required")
 			continue
 		}
 		return value, nil
 	}
+}
+
+func hasConfigChanged(before config.Config, after config.Config) bool {
+	return strings.TrimRight(strings.TrimSpace(before.APIURL), "/") != strings.TrimRight(strings.TrimSpace(after.APIURL), "/") ||
+		strings.TrimSpace(before.CustomerDomain) != strings.TrimSpace(after.CustomerDomain) ||
+		strings.TrimSpace(before.CustomerAPIKey) != strings.TrimSpace(after.CustomerAPIKey) ||
+		strings.TrimSpace(before.UserEmail) != strings.TrimSpace(after.UserEmail)
+}
+
+func validateExternalCredentials(cfg config.Config) error {
+	client, err := mustClientFromConfig(cfg)
+	if err != nil {
+		return err
+	}
+
+	body, status, reqErr := client.Do("GET", "/api/v1/external/modules", nil)
+	if reqErr != nil {
+		details := strings.TrimSpace(formatStructuredOutput(body))
+		if details != "" {
+			return fmt.Errorf("credentials validation failed: %w\n%s", reqErr, details)
+		}
+		return fmt.Errorf("credentials validation failed: %w", reqErr)
+	}
+
+	if status < 200 || status >= 300 {
+		trimmed := strings.TrimSpace(string(body))
+		if trimmed != "" {
+			return fmt.Errorf("credentials validation failed with http %d: %s", status, trimmed)
+		}
+		return fmt.Errorf("credentials validation failed with http %d", status)
+	}
+
+	return nil
 }
