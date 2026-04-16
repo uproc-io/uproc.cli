@@ -17,6 +17,7 @@ All notable changes in `bizzmod-cli` should be documented in this file.
 - Switched auth/config flow to `config.yml` profiles only (project-local by default), removing `.env` credential fallback and `UPROC_CONFIG` override behavior.
 - Updated root help to show which `config.yml` file is being used while keeping normal command output clean.
 - Updated README usage examples to grouped command syntax (`uproc processes ...`) and profile-based login.
+- CLI requests now send explicit client-identification headers (`x-client-app: uproc-cli`, `User-Agent: uproc-cli/1.0`) so backend can enforce CLI-specific permissions without affecting non-CLI integrations.
 
 ### Verification
 - `go test ./...`

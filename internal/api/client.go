@@ -10,6 +10,8 @@ import (
 	"bizzmod-cli/internal/config"
 )
 
+const cliUserAgent = "uproc-cli/1.0"
+
 type Client struct {
 	httpClient *http.Client
 	config     config.Config
@@ -38,6 +40,8 @@ func (c *Client) Do(method, path string, body []byte) ([]byte, int, error) {
 	req.Header.Set("x-api-key", c.config.CustomerAPIKey)
 	req.Header.Set("x-customer-domain", c.config.CustomerDomain)
 	req.Header.Set("x-user-email", c.config.UserEmail)
+	req.Header.Set("x-client-app", "uproc-cli")
+	req.Header.Set("User-Agent", cliUserAgent)
 	if len(body) > 0 {
 		req.Header.Set("Content-Type", "application/json")
 	}
