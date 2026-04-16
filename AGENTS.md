@@ -28,6 +28,12 @@ When adding new CLI commands:
 - Prefer wrapping existing `/api/v1/external/*` endpoints directly.
 - Keep a generic raw command (currently `request`) to avoid endpoint coverage gaps.
 - Update `README.md` command list in the same change set.
+- If anything changes under `cmd/processes/*` or `cmd/profile.go` (commands, flags, args, hierarchy, output/help text, examples), you MUST update backend CLI docs policy/docs in the same change set:
+  - `../back/AGENTS.md`
+  - `../back/docs/templates/cli.template.md`
+  - `../back/docs/cli.en.md`
+  - `../back/docs/cli.es.md`
+  - `../back/docs/cli.ca.md`
 
 Install command policy:
 - `install` must consume `/api/v1/external/install` and render a full installation plan.
