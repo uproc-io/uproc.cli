@@ -61,9 +61,15 @@ brews:
       bin.install "uproc"
 
 scoops:
-  - repository:
+  - name: uproc
+    repository:
       owner: uproc-io
       name: scoop-bucket
+      branch: main
+      token: "{{ .Env.GITHUB_TOKEN }}"
+    commit_author:
+      name: github-actions[bot]
+      email: 41898282+github-actions[bot]@users.noreply.github.com
     homepage: https://github.com/uproc-io/uproc.cli
     description: Uproc CLI
     license: Proprietary
