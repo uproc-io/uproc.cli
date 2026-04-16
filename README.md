@@ -17,6 +17,7 @@ Use `uproc processes login --profile <name> --use` to create/update a profile.
 go mod tidy
 go build -o uproc
 ./uproc --help
+./uproc --version
 ```
 
 Or run directly:

@@ -7,8 +7,10 @@ import (
 	"bizzmod-cli/cmd"
 )
 
+var version = "dev"
+
 func main() {
-	if err := cmd.NewRootCmd().Execute(); err != nil {
+	if err := cmd.NewRootCmd(version).Execute(); err != nil {
 		fmt.Fprintln(os.Stderr, err)
 		os.Exit(1)
 	}

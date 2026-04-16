@@ -7,17 +7,20 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func NewRootCmd() *cobra.Command {
+func NewRootCmd(version string) *cobra.Command {
 	var configPath string
 
 	rootCmd := &cobra.Command{
-		Use:   "uproc",
-		Short: "Uproc CLI for managing and interacting with Uproc services (https://uproc.io)",
+		Use:     "uproc",
+		Short:   "Uproc CLI for managing and interacting with Uproc services (https://uproc.io)",
+		Version: version,
 		PersistentPreRunE: func(cmd *cobra.Command, args []string) error {
 			config.SetConfigPath(configPath)
 			return nil
 		},
 	}
+
+	rootCmd.SetVersionTemplate("{{printf \"uproc version %s\\n\" .Version}}")
 
 	defaultHelp := rootCmd.HelpFunc()
 	rootCmd.SetHelpFunc(func(cmd *cobra.Command, args []string) {
@@ -35,6 +38,13 @@ func NewRootCmd() *cobra.Command {
 	rootCmd.AddCommand(newDataCmd())
 	rootCmd.AddCommand(newConfigCmd())
 	rootCmd.AddCommand(newProfileCmd())
+	rootCmd.AddCommand(&cobra.Command{
+		Use:   "version",
+		Short: "Show CLI version",
+		Run: func(cmd *cobra.Command, args []string) {
+			_, _ = cmd.OutOrStdout().Write([]byte("uproc version " + version + "\n"))
+		},
+	})
 	rootCmd.PersistentFlags().StringVar(&configPath, "config", "", "path to config file (defaults to ./config.yml)")
 
 	return rootCmd
