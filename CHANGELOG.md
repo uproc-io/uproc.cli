@@ -19,6 +19,10 @@ All notable changes in `bizzmod-cli` should be documented in this file.
 - Updated README usage examples to grouped command syntax (`uproc processes ...`) and profile-based login.
 - CLI requests now send explicit client-identification headers (`x-client-app: uproc-cli`, `User-Agent: uproc-cli/1.0`) so backend can enforce CLI-specific permissions without affecting non-CLI integrations.
 - Updated login interactive/base-URL validation messaging to show `UPROC_PROCESSES_API_URL` while keeping internal config storage as `api_url`.
+- Fixed GoReleaser Homebrew repository target to `uproc-io/homebrew-uproc`.
+
+### Added
+- Added `update_homebrew_uproc.sh` to manually update `homebrew-uproc/Formula/uproc.rb` with release version and checksums when automatic formula updates fail.
 
 ### Verification
 - `go test ./...`

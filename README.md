@@ -39,6 +39,9 @@ Packaging:
 - Homebrew tap formula update
 - Scoop manifest update
 
+Important:
+- Homebrew formula repository is `uproc-io/homebrew-uproc`.
+
 ### Release process
 
 1. Run local checks:
@@ -73,6 +76,14 @@ Or use the automatic tag script (patch by default):
 
 GitHub Actions (`.github/workflows/release.yml`) will publish the release.
 
+If Homebrew formula is not updated automatically, run:
+
+```bash
+./update_homebrew_uproc.sh --tag vX.Y.Z --push-pr
+```
+
+This updates `Formula/uproc.rb` in `uproc-io/homebrew-uproc` with the release version and checksums from `checksums.txt`.
+
 ### Check release in GitHub with `gh`
 
 ```bash
@@ -95,7 +106,7 @@ Expected:
 
 ```bash
 # First-time setup (tap + install)
-brew tap uproc-io/homebrew-tap
+brew tap uproc-io/uproc
 brew install uproc
 
 # Update to latest available version
