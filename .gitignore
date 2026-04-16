@@ -1,3 +1,4 @@
-uproc-processes
+uproc
 .env
 dist/
+config.yml
