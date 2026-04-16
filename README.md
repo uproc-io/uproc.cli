@@ -8,27 +8,15 @@ Minimal CLI to authenticate and call Bizzmod External API endpoints (`/api/v1/ex
 
 ## Setup
 
-1. Copy env file:
-
-```bash
-cp .env.sample .env
-```
-
-2. Fill required values:
-
-- `BIZZMOD_API_URL`
-- `CUSTOMER_DOMAIN`
-- `CUSTOMER_API_KEY`
-- `CUSTOMER_USER_EMAIL`
-
-You can also store credentials with `login` (recommended for local usage).
+Credentials are managed in `config.yml` (project root) using profiles.
+Use `uproc processes login --profile <name> --use` to create/update a profile.
 
 ## Build and run
 
 ```bash
 go mod tidy
-go build -o uproc-processes
-./uproc-processes --help
+go build -o uproc
+./uproc --help
 ```
 
 Or run directly:
@@ -90,22 +78,22 @@ GitHub Actions (`.github/workflows/release.yml`) will publish the release.
 ### Auth
 
 ```bash
-uproc-processes login
+uproc processes login --profile mcolomer@local --use
 ```
 
-Stores credentials in OS user config path (`bizzmod-cli/config.json`).
+Stores credentials in `./config.yml` under the selected profile.
 
 `login` reads credentials in this order:
 - command arguments (optional, still supported)
-- environment variables (`.env` or shell env)
+- existing values from the selected profile
 - interactive prompt step-by-step for all values (shows current value as default)
 
 `CUSTOMER_DOMAIN` must be the customer domain identifier (not a URL).
 
-Example using environment values:
+Example:
 
 ```bash
-uproc-processes login
+uproc processes login --profile mcolomer@local --use
 ```
 
 `login` always lets you review values and keep/update each one.
@@ -114,13 +102,13 @@ When any value changes, CLI validates credentials by calling `/api/v1/external/m
 ### Raw external request
 
 ```bash
-uproc-processes request <METHOD> <PATH> [JSON_BODY]
+uproc processes request <METHOD> <PATH> [JSON_BODY]
 ```
 
 Example:
 
 ```bash
-uproc-processes request GET /api/v1/external/modules
+uproc processes request GET /api/v1/external/modules
 ```
 
 Output is always rendered as readable tables/lists (never raw JSON).
@@ -129,15 +117,15 @@ When backend response includes `{ success, message, data }`, CLI prints only `da
 ### Module commands
 
 ```bash
-uproc-processes module list
-uproc-processes module get <module_slug>
-uproc-processes module overview <module_slug> [kpis|charts|tables]
-uproc-processes module collections <module_slug>
-uproc-processes module collection <module_slug> <collection_name> [--page 1 --sort-field key --sort-order asc --filter-field key --filter-value val]
-uproc-processes module data <module_slug> <collection_name> [--page 1 --sort-field key --sort-order asc --filter-field key --filter-value val]
-uproc-processes module upload <module_slug> <collection_name> <file_path>
-uproc-processes module upload <module_slug> <collection_name> "*.pdf"
-uproc-processes module webhook <module_slug> <collection_name> <payload_json>
+uproc processes module list
+uproc processes module get <module_slug>
+uproc processes module overview <module_slug> [kpis|charts|tables]
+uproc processes module collections <module_slug>
+uproc processes module collection <module_slug> <collection_name> [--page 1 --sort-field key --sort-order asc --filter-field key --filter-value val]
+uproc processes module data <module_slug> <collection_name> [--page 1 --sort-field key --sort-order asc --filter-field key --filter-value val]
+uproc processes module upload <module_slug> <collection_name> <file_path>
+uproc processes module upload <module_slug> <collection_name> "*.pdf"
+uproc processes module webhook <module_slug> <collection_name> <payload_json>
 ```
 
 `module upload` accepts one or more file paths and glob masks. When a mask matches multiple files, CLI uploads each file and prints per-file progress and result.
@@ -145,38 +133,38 @@ uproc-processes module webhook <module_slug> <collection_name> <payload_json>
 ### Admin commands
 
 ```bash
-uproc-processes admin users list [--customer-id 1]
-uproc-processes admin users get <user_id>
+uproc processes admin users list [--customer-id 1]
+uproc processes admin users get <user_id>
 
-uproc-processes admin customers list
-uproc-processes admin customers get <customer_id>
+uproc processes admin customers list
+uproc processes admin customers get <customer_id>
 
-uproc-processes admin credentials list [--customer-id 1 --category ai --type api_key]
-uproc-processes admin credentials get <credential_id>
+uproc processes admin credentials list [--customer-id 1 --category ai --type api_key]
+uproc processes admin credentials get <credential_id>
 
-uproc-processes admin modules list
-uproc-processes admin modules get <module_slug>
+uproc processes admin modules list
+uproc processes admin modules get <module_slug>
 
-uproc-processes admin tickets list
-uproc-processes admin tickets get <ticket_id>
+uproc processes admin tickets list
+uproc processes admin tickets get <ticket_id>
 
-uproc-processes admin logs --module-slug <module_slug> [--level all --page 1]
-uproc-processes admin ai-requests [--customer-id 1 --module-slug financial-reconciliation --page 1 --limit 25]
-uproc-processes admin changelog
+uproc processes admin logs --module-slug <module_slug> [--level all --page 1]
+uproc processes admin ai-requests [--customer-id 1 --module-slug financial-reconciliation --page 1 --limit 25]
+uproc processes admin changelog
 ```
 
 Admin create/update subcommands are currently hidden from help output.
 Admin create/update commands run interactive contract mode (contracts fetched from API):
 
 ```bash
-uproc-processes admin users create
-uproc-processes admin users update
-uproc-processes admin customers create
-uproc-processes admin customers update
-uproc-processes admin credentials create
-uproc-processes admin credentials update
-uproc-processes admin tickets create
-uproc-processes admin tickets update
+uproc processes admin users create
+uproc processes admin users update
+uproc processes admin customers create
+uproc processes admin customers update
+uproc processes admin credentials create
+uproc processes admin credentials update
+uproc processes admin tickets create
+uproc processes admin tickets update
 ```
 
 All admin commands use external API endpoints under `/api/v1/external/admin/*`, except ticket commands that use `/api/v1/external/tickets/*`.
@@ -185,23 +173,23 @@ Admin list output uses backend list contracts (`/api/v1/external/admin/contracts
 ### Interactive mode
 
 ```bash
-uproc-processes interactive
+uproc processes interactive
 ```
 
 Inside interactive mode, run commands without the binary name:
 
 ```text
-uproc-processes> module list
-uproc-processes> module get order-track
-uproc-processes> request GET /api/v1/external/modules
-uproc-processes> help
-uproc-processes> exit
+uproc> module list
+uproc> module get order-track
+uproc> request GET /api/v1/external/modules
+uproc> help
+uproc> exit
 ```
 
 ### Install plan (dry-run)
 
 ```bash
-uproc-processes install <CUSTOMER_API_KEY> --dry-run
+uproc processes install <CUSTOMER_API_KEY> --dry-run
 ```
 
 This command fetches `/api/v1/external/install` and shows the full installation plan (release versions, required services, and ordered steps) without executing changes on the server.
@@ -209,7 +197,7 @@ This command fetches `/api/v1/external/install` and shows the full installation 
 ### Update check (dry-run only)
 
 ```bash
-uproc-processes update check <CUSTOMER_API_KEY>
+uproc processes update check <CUSTOMER_API_KEY>
 ```
 
 This command validates update readiness using `/api/v1/external/install?dry_run=true` plus local read-only checks (docker, dokploy, required services, required env vars, and health endpoints). It never executes deployment/apply actions.

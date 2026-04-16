@@ -34,4 +34,4 @@ jobs:
         run: go test ./...
 
       - name: Build
-        run: go build -o uproc-processes
+        run: go build -o uproc

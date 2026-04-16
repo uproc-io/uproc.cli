@@ -1,4 +1,4 @@
-package cmd
+package processes
 
 import (
 	"bufio"
@@ -10,12 +10,27 @@ import (
 )
 
 func newLoginCmd() *cobra.Command {
+	var profileName string
+	var useProfile bool
+
 	cmd := &cobra.Command{
 		Use:   "login",
-		Short: "Save API credentials from args or environment",
+		Short: "Configure credentials with step-by-step profile wizard",
 		Args:  cobra.RangeArgs(0, 4),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			currentCfg := config.FromEnv()
+			if strings.TrimSpace(profileName) == "" {
+				active, err := config.GetActiveProfileName()
+				if err == nil && strings.TrimSpace(active) != "" {
+					profileName = active
+				} else {
+					profileName = "default"
+				}
+			}
+
+			currentCfg, err := config.LoadProfile(profileName)
+			if err != nil {
+				return err
+			}
 			cfg := currentCfg
 
 			if len(args) > 0 {
@@ -43,22 +58,25 @@ func newLoginCmd() *cobra.Command {
 				}
 			}
 
-			if err := config.SaveDotEnv(cfg, ".env"); err != nil {
-				return err
-			}
-
-			if err := config.Save(cfg); err != nil {
+			if err := config.SaveProfile(profileName, cfg, useProfile); err != nil {
 				return err
 			}
 
 			if changed {
-				fmt.Fprintln(cmd.OutOrStdout(), "ok: credentials saved and validated")
+				fmt.Fprintf(cmd.OutOrStdout(), "ok: profile %q saved and validated\n", profileName)
 			} else {
-				fmt.Fprintln(cmd.OutOrStdout(), "ok: credentials unchanged")
+				fmt.Fprintf(cmd.OutOrStdout(), "ok: profile %q unchanged\n", profileName)
+			}
+
+			if useProfile {
+				fmt.Fprintf(cmd.OutOrStdout(), "ok: active profile set to %q\n", profileName)
 			}
 			return nil
 		},
 	}
+
+	cmd.Flags().StringVar(&profileName, "profile", "", "profile name to save")
+	cmd.Flags().BoolVar(&useProfile, "use", false, "set profile as active after saving")
 
 	return cmd
 }

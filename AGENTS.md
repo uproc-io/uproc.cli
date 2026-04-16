@@ -16,7 +16,7 @@ Build, lint, and test commands
 --------------------------------------------------------------------------------
 
 - Install deps: `go mod tidy`
-- Build binary: `go build -o uproc-processes`
+- Build binary: `go build -o uproc`
 - Run without build: `go run . --help`
 - Format: `gofmt -w .`
 - Lint (if available): `go vet ./...`
@@ -40,8 +40,8 @@ Distribution notes:
 - Packaging targets include GitHub Releases, Homebrew tap, and Scoop bucket.
 
 Authentication UX notes:
-- `login` supports args, env vars, and interactive prompt fallback.
-- If `.env` is missing/incomplete and no args are provided, `login` prompts for required values and creates `.env`.
+- `login` supports args and interactive prompt fallback.
+- Credentials are stored in `config.yml` profiles (project-local by default).
 
 --------------------------------------------------------------------------------
 Code style and safety
@@ -58,6 +58,6 @@ Changelog policy
 
 - `cli/CHANGELOG.md` is mandatory.
 - Any functional change in `cli/` (commands, flags, args, request contracts, auth flow, output behavior, docs semantics) must include a matching `cli/CHANGELOG.md` entry in the same change set.
-- Include verification commands in each changelog entry (`go test ./...`, `go vet ./...`, `go build -o uproc-processes` at minimum).
+- Include verification commands in each changelog entry (`go test ./...`, `go vet ./...`, `go build -o uproc` at minimum).
 
 Keep this file updated when CLI commands, conventions, or release workflows are formalized.

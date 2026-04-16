@@ -2,6 +2,27 @@
 
 All notable changes in `bizzmod-cli` should be documented in this file.
 
+## 2026-04-16
+
+### Added
+- Added new root command groups `operations` and `data` with explicit under-construction messaging and docs link (`https://uproc.io`).
+- Added `config path` command to print the resolved config file location.
+- Added `profile` command group (`list`, `show`, `use`) for profile management.
+
+### Changed
+- Reorganized command implementation by moving process-related commands into `cmd/processes/*` and exposing them under `uproc processes ...`.
+- Updated root command tree to include `processes`, `profile`, `operations`, and `data` groups.
+- Moved interactive shell under processes (`uproc processes interactive`) and updated prompt/help text.
+- Renamed distributed binary and CI/build references to `uproc`.
+- Switched auth/config flow to `config.yml` profiles only (project-local by default), removing `.env` credential fallback and `UPROC_CONFIG` override behavior.
+- Updated root help to show which `config.yml` file is being used while keeping normal command output clean.
+- Updated README usage examples to grouped command syntax (`uproc processes ...`) and profile-based login.
+
+### Verification
+- `go test ./...`
+- `go vet ./...`
+- `go build -o uproc`
+
 ## 2026-04-15
 
 ### Added
@@ -27,7 +48,7 @@ All notable changes in `bizzmod-cli` should be documented in this file.
 - Admin create/update commands no longer accept inline payload args; they always run interactive mode and fetch the contract from API before prompting.
 - Admin list commands (`users`, `customers`, `credentials`, `tickets`) now fetch list contracts and enforce backend-provided `visible_fields` so CLI list output matches admin table-visible columns.
 - `login` interactive flow now runs step-by-step for all credentials when no args are provided, showing current values as defaults and allowing keep-or-update per field.
-- `login` now validates updated credentials by calling `/api/v1/external/modules` whenever any value changes, and only then persists `.env`/config.
+- `login` now validates updated credentials by calling `/api/v1/external/modules` whenever any value changes, and only then persists local config.
 - Replaced `module kpis` with `module overview <module_slug> [kpis|charts|tables]` and added terminal-adapted overview rendering.
 - Overview output now renders KPIs, charts (including donut/pie visual summaries), and tables in a readable terminal format.
 - Overview rendering now strictly consumes backend overview sections (`kpis`, `charts`, `tables`) and no longer depends on legacy `labels`/`series` fallbacks.
@@ -37,7 +58,7 @@ All notable changes in `bizzmod-cli` should be documented in this file.
 - `./release_tag.sh --help`
 - `go test ./...`
 - `go vet ./...`
-- `go build -o uproc-processes`
+- `go build -o uproc`
 
 ## 2026-03-28
 
@@ -51,4 +72,4 @@ All notable changes in `bizzmod-cli` should be documented in this file.
 ### Verification
 - `go test ./...`
 - `go vet ./...`
-- `go build -o uproc-processes`
+- `go build -o uproc`

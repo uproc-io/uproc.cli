@@ -1,20 +1,41 @@
 package cmd
 
-import "github.com/spf13/cobra"
+import (
+	"bizzmod-cli/cmd/processes"
+	"bizzmod-cli/internal/config"
+	"fmt"
+	"github.com/spf13/cobra"
+)
 
 func NewRootCmd() *cobra.Command {
+	var configPath string
+
 	rootCmd := &cobra.Command{
-		Use:   "uproc-processes",
-		Short: "Bizzmod CLI for /api/v1/external",
+		Use:   "uproc",
+		Short: "Uproc CLI for managing and interacting with Uproc services (https://uproc.io)",
+		PersistentPreRunE: func(cmd *cobra.Command, args []string) error {
+			config.SetConfigPath(configPath)
+			return nil
+		},
 	}
 
-	rootCmd.AddCommand(newLoginCmd())
-	rootCmd.AddCommand(newRequestCmd())
-	rootCmd.AddCommand(newModuleCmd())
-	rootCmd.AddCommand(newAdminCmd())
-	rootCmd.AddCommand(newInstallCmd())
-	rootCmd.AddCommand(newUpdateCmd())
-	rootCmd.AddCommand(newInteractiveCmd())
+	defaultHelp := rootCmd.HelpFunc()
+	rootCmd.SetHelpFunc(func(cmd *cobra.Command, args []string) {
+		if cmd == rootCmd {
+			config.SetConfigPath(configPath)
+			if path, err := config.ResolvedConfigPath(); err == nil {
+				fmt.Fprintf(cmd.OutOrStdout(), "Config file: %s\n\n", path)
+			}
+		}
+		defaultHelp(cmd, args)
+	})
+
+	rootCmd.AddCommand(processes.NewCmd())
+	rootCmd.AddCommand(newOperationsCmd())
+	rootCmd.AddCommand(newDataCmd())
+	rootCmd.AddCommand(newConfigCmd())
+	rootCmd.AddCommand(newProfileCmd())
+	rootCmd.PersistentFlags().StringVar(&configPath, "config", "", "path to config file (defaults to ./config.yml)")
 
 	return rootCmd
 }

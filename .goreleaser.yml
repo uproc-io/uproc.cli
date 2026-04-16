@@ -1,14 +1,14 @@
 version: 2
 
-project_name: uproc-processes
+project_name: uproc.cli
 
 before:
   hooks:
     - go mod tidy
 
 builds:
-  - id: uproc-processes
-    binary: uproc-processes
+  - id: uproc
+    binary: uproc
     main: ./main.go
     env:
       - CGO_ENABLED=0
@@ -43,27 +43,27 @@ changelog:
 
 release:
   github:
-    owner: killia
-    name: bizzmod-cli
+    owner: uproc-io
+    name: uproc.cli
   draft: false
   prerelease: auto
 
 brews:
-  - name: uproc-processes
+  - name: uproc
     repository:
-      owner: killia
+      owner: uproc-io
       name: homebrew-tap
-    homepage: https://github.com/killia/bizzmod-cli
-    description: Bizzmod CLI for /api/v1/external endpoints
+    homepage: https://github.com/uproc-io/uproc.cli
+    description: Uproc CLI
     test: |
-      system "#{bin}/uproc-processes --help"
+      system "#{bin}/uproc --help"
     install: |
-      bin.install "uproc-processes"
+      bin.install "uproc"
 
 scoops:
   - repository:
-      owner: killia
+      owner: uproc-io
       name: scoop-bucket
-    homepage: https://github.com/killia/bizzmod-cli
-    description: Bizzmod CLI for /api/v1/external endpoints
+    homepage: https://github.com/uproc-io/uproc.cli
+    description: Uproc CLI
     license: Proprietary
