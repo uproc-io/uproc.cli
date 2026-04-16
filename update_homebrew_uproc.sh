@@ -40,7 +40,7 @@ while [[ $# -gt 0 ]]; do
       shift 2
       ;;
     --push-pr)
-      PUSH_MODE="pr"
+PUSH_MODE="direct"
       shift
       ;;
     --push-direct)
