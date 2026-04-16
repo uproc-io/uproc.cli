@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	"bizzmod-cli/internal/config"
+
 	"github.com/spf13/cobra"
 )
 
@@ -84,7 +85,7 @@ func newLoginCmd() *cobra.Command {
 func promptReviewFields(cfg config.Config, cmd *cobra.Command) (config.Config, error) {
 	reader := bufio.NewReader(cmd.InOrStdin())
 
-	apiURL, err := promptWithDefault(reader, cmd, "BIZZMOD_API_URL", cfg.APIURL)
+	apiURL, err := promptWithDefault(reader, cmd, "UPROC_PROCESSES_API_URL", cfg.APIURL)
 	if err != nil {
 		return cfg, err
 	}

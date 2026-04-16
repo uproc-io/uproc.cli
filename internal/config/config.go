@@ -350,7 +350,7 @@ func SetActiveProfile(name string) error {
 
 func Validate(cfg Config) error {
 	if strings.TrimSpace(cfg.APIURL) == "" {
-		return fmt.Errorf("missing BIZZMOD_API_URL or login config")
+		return fmt.Errorf("missing UPROC_PROCESSES_API_URL or login config")
 	}
 	if strings.TrimSpace(cfg.CustomerAPIKey) == "" {
 		return fmt.Errorf("missing CUSTOMER_API_KEY or login config")
