@@ -73,6 +73,36 @@ Or use the automatic tag script (patch by default):
 
 GitHub Actions (`.github/workflows/release.yml`) will publish the release.
 
+### Check release in GitHub with `gh`
+
+```bash
+# Replace with the tag you want to verify
+TAG="vX.Y.Z"
+
+# 1) Check the tag exists in GitHub
+gh api "repos/uproc-io/uproc.cli/git/ref/tags/${TAG}" --jq '.ref'
+
+# 2) Check GitHub Release exists for that tag
+gh release view "${TAG}" --repo uproc-io/uproc.cli \
+  --json tagName,isDraft,isPrerelease,publishedAt,url
+```
+
+Expected:
+- Step 1 returns `refs/tags/vX.Y.Z`
+- Step 2 returns release metadata and URL
+
+### Install or update CLI with Homebrew
+
+```bash
+# First-time setup (tap + install)
+brew tap uproc-io/homebrew-tap
+brew install uproc
+
+# Update to latest available version
+brew update
+brew upgrade uproc
+```
+
 ## Commands
 
 ### Auth
