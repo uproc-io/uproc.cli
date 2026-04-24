@@ -165,6 +165,8 @@ uproc processes module overview <module_slug> [kpis|charts|tables]
 uproc processes module collections <module_slug>
 uproc processes module collection <module_slug> <collection_name> [--page 1 --sort-field key --sort-order asc --filter-field key --filter-value val]
 uproc processes module data <module_slug> <collection_name> [--page 1 --sort-field key --sort-order asc --filter-field key --filter-value val]
+uproc processes module settings-tabs <module_slug>
+uproc processes module settings-tab <module_slug> <tab_key>
 uproc processes module upload <module_slug> <collection_name> <file_path>
 uproc processes module upload <module_slug> <collection_name> "*.pdf"
 uproc processes module webhook <module_slug> <collection_name> <payload_json>

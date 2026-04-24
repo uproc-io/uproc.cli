@@ -25,10 +25,50 @@ func newModuleCmd() *cobra.Command {
 	moduleCmd.AddCommand(newModuleCollectionsCmd())
 	moduleCmd.AddCommand(newModuleCollectionCmd())
 	moduleCmd.AddCommand(newModuleDataCmd())
+	moduleCmd.AddCommand(newModuleSettingsTabsCmd())
+	moduleCmd.AddCommand(newModuleSettingsTabCmd())
 	moduleCmd.AddCommand(newModuleUploadCmd())
 	moduleCmd.AddCommand(newModuleWebhookCmd())
 
 	return moduleCmd
+}
+
+func newModuleSettingsTabsCmd() *cobra.Command {
+	return &cobra.Command{
+		Use:   "settings-tabs <module_slug>",
+		Short: "List available settings tabs for a module (read-only)",
+		Args:  cobra.ExactArgs(1),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			client, err := mustClient()
+			if err != nil {
+				return err
+			}
+			path := fmt.Sprintf("/api/v1/external/modules/%s/settings/tabs", args[0])
+			body, status, reqErr := client.Do("GET", path, nil)
+			return printResponse(cmd, body, status, reqErr)
+		},
+	}
+}
+
+func newModuleSettingsTabCmd() *cobra.Command {
+	return &cobra.Command{
+		Use:   "settings-tab <module_slug> <tab_key>",
+		Short: "Get values for one settings tab (read-only)",
+		Args:  cobra.ExactArgs(2),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			client, err := mustClient()
+			if err != nil {
+				return err
+			}
+			path := fmt.Sprintf(
+				"/api/v1/external/modules/%s/settings/tab/%s",
+				args[0],
+				args[1],
+			)
+			body, status, reqErr := client.Do("GET", path, nil)
+			return printResponse(cmd, body, status, reqErr)
+		},
+	}
 }
 
 func newModuleListCmd() *cobra.Command {

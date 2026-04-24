@@ -5,6 +5,13 @@ All notable changes in `bizzmod-cli` should be documented in this file.
 ## 2026-04-16
 
 ### Added
+- Added module settings read-only commands:
+  - `uproc processes module settings-tabs <module_slug>`
+  - `uproc processes module settings-tab <module_slug> <tab_key>`
+  These commands consume new external read-only settings endpoints and do not expose any settings mutation workflow.
+- Added command tree test coverage for module settings commands in `cmd/processes/module_test.go`.
+
+### Added
 - Added new root command groups `operations` and `data` with explicit under-construction messaging and docs link (`https://uproc.io`).
 - Added `config path` command to print the resolved config file location.
 - Added `profile` command group (`list`, `show`, `use`) for profile management.
