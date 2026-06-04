@@ -12,6 +12,16 @@ Scope and precedence
 - Keep changes minimal and aligned with existing CLI repository conventions.
 
 --------------------------------------------------------------------------------
+TODO.md policy
+--------------------------------------------------------------------------------
+
+- Before starting work, read `TODO.md` in the `cli/` repository root.
+- Use `TODO.md` to detect pending work, partially applied requirements, blockers, and follow-ups before making changes.
+- When work leaves unfinished scope or reveals new follow-ups, update `TODO.md` in the same change set.
+- When completing pending work, update the corresponding `TODO.md` entries so the repository backlog stays current.
+- Treat `TODO.md` as the operational handoff and pending-work tracker for CLI agent workflows.
+
+--------------------------------------------------------------------------------
 Build, lint, and test commands
 --------------------------------------------------------------------------------
 

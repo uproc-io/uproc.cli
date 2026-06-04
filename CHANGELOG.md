@@ -2,6 +2,18 @@
 
 All notable changes in `bizzmod-cli` should be documented in this file.
 
+## 2026-06-04
+
+### Added
+- Added `cli/TODO.md` as the repository-level tracker for pending work, partially applied requirements, blockers, and follow-ups.
+
+### Changed
+- Updated `cli/AGENTS.md` so agents must read and maintain `TODO.md` before starting work and when leaving unfinished scope.
+- This change standardizes backlog handoff for CLI agent workflows and makes pending command/documentation requirements discoverable before changes begin.
+
+### Verification
+- `git diff --check`
+
 ## 2026-05-16
 
 ### Added
