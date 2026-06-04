@@ -9,6 +9,11 @@ func TestNewCandidateCmdContainsExpectedVerbs(t *testing.T) {
 	}
 
 	expected := map[string]bool{
+		"list-profiles":      false,
+		"list-job-openings":  false,
+		"list-applications":  false,
+		"list-evaluations":   false,
+		"list-stage-events":  false,
 		"create-profile":     false,
 		"create-job-opening": false,
 		"create-application": false,

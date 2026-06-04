@@ -9,6 +9,7 @@ func TestNewSupportCmdContainsExpectedVerbs(t *testing.T) {
 	}
 
 	expected := map[string]bool{
+		"list":          false,
 		"create-ticket": false,
 		"assign-ticket": false,
 		"reply-ticket":  false,

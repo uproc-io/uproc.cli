@@ -9,11 +9,16 @@ func newCandidateCmd() *cobra.Command {
 	}
 
 	candidateCmd.AddCommand(newCandidateCreateProfileCmd())
+	candidateCmd.AddCommand(newCollectionListCmd("list-profiles", "List candidate profiles", "candidate-evaluation", "profiles"))
 	candidateCmd.AddCommand(newCandidateCreateJobOpeningCmd())
+	candidateCmd.AddCommand(newCollectionListCmd("list-job-openings", "List candidate job openings", "candidate-evaluation", "job_openings"))
 	candidateCmd.AddCommand(newCandidateCreateApplicationCmd())
+	candidateCmd.AddCommand(newCollectionListCmd("list-applications", "List candidate applications", "candidate-evaluation", "applications"))
 	candidateCmd.AddCommand(newCandidateMoveStageCmd())
 	candidateCmd.AddCommand(newCandidateUpdateStatusCmd())
 	candidateCmd.AddCommand(newCandidateCreateEvaluationCmd())
+	candidateCmd.AddCommand(newCollectionListCmd("list-evaluations", "List candidate evaluations", "candidate-evaluation", "evaluations"))
+	candidateCmd.AddCommand(newCollectionListCmd("list-stage-events", "List candidate stage events", "candidate-evaluation", "stage_events"))
 
 	return candidateCmd
 }

@@ -177,6 +177,9 @@ uproc processes module webhook <module_slug> <collection_name> <payload_json>
 ### Forms commands
 
 ```bash
+uproc processes forms list [--page 1 --sort-field created_at --sort-order desc --filter-field status --filter-value published]
+uproc processes forms list-fields [--page 1]
+uproc processes forms list-submissions [--page 1]
 uproc processes forms submit-public <customer_domain> <form_slug> <payload_json>
 uproc processes forms publish <form_id>
 uproc processes forms archive <form_id>
@@ -203,6 +206,11 @@ uproc processes module submit-public-form <customer_domain> <form_slug> <payload
 ### Candidate commands
 
 ```bash
+uproc processes candidate list-profiles [--page 1]
+uproc processes candidate list-job-openings [--page 1]
+uproc processes candidate list-applications [--page 1]
+uproc processes candidate list-evaluations [--page 1]
+uproc processes candidate list-stage-events [--page 1]
 uproc processes candidate create-profile <item_json>
 uproc processes candidate create-job-opening <item_json>
 uproc processes candidate create-application <item_json>
@@ -216,6 +224,7 @@ These commands wrap the existing `candidate-evaluation` business verbs.
 ### Support commands
 
 ```bash
+uproc processes support list [--page 1]
 uproc processes support create-ticket <item_json>
 uproc processes support assign-ticket <ticket_id> <assignee>
 uproc processes support reply-ticket <ticket_id> <message>
@@ -229,6 +238,7 @@ These commands wrap the existing `customer-care` business verbs.
 ### Approval commands
 
 ```bash
+uproc processes approval list [--page 1]
 uproc processes approval approve <request_id>
 uproc processes approval reject <request_id>
 uproc processes approval reassign <request_id> <approver> [note]
@@ -236,6 +246,256 @@ uproc processes approval cancel <request_id>
 ```
 
 These commands wrap the existing `approval-management` business verbs.
+
+### Campaign commands
+
+```bash
+uproc processes campaign list [--page 1]
+uproc processes campaign list-audiences [--page 1]
+uproc processes campaign preview-audience <campaign_id> [limit]
+uproc processes campaign add-audience <campaign_id> [mode]
+uproc processes campaign pause <campaign_id>
+uproc processes campaign activate <campaign_id>
+```
+
+These commands wrap the existing `campaign-automation` business verbs.
+
+### Contract commands
+
+```bash
+uproc processes contract list [--page 1]
+uproc processes contract list-expiring [--page 1]
+uproc processes contract list-by-counterparty [--page 1]
+uproc processes contract renew <contract_id>
+uproc processes contract terminate <contract_id>
+uproc processes contract update <contract_id> <data_json>
+```
+
+These commands wrap the existing `contract-lifecycle` business verbs.
+
+### Order commands
+
+```bash
+uproc processes order list [--page 1]
+uproc processes order mark-received <order_id>
+uproc processes order cancel <order_id>
+uproc processes order send-reminder <order_id>
+```
+
+These commands wrap the existing `order-track` business verbs.
+
+### Email commands
+
+```bash
+uproc processes email list [--page 1]
+uproc processes email mark-processed <email_id>
+uproc processes email archive <email_id>
+```
+
+These commands wrap the existing `email-assistant` business verbs.
+
+### Process commands
+
+```bash
+uproc processes process list [--page 1]
+uproc processes process retry-step <process_id>
+uproc processes process reassign-owner <process_id>
+uproc processes process cancel <process_id>
+```
+
+These commands wrap the existing `process-visibility` business verbs.
+
+### Signals commands
+
+```bash
+uproc processes signals list [--page 1]
+uproc processes signals list-executions [--page 1]
+uproc processes signals list-activations [--page 1]
+uproc processes signals approve <signal_id>
+uproc processes signals discard <signal_id>
+uproc processes signals mark-pending-review <signal_id>
+uproc processes signals activate <signal_id>
+uproc processes signals close <signal_id>
+```
+
+These commands wrap the existing `business-signals` business verbs.
+
+### Editorial commands
+
+```bash
+uproc processes editorial list-opportunities [--page 1]
+uproc processes editorial list-projects [--page 1]
+uproc processes editorial list-articles [--page 1]
+uproc processes editorial list-combined [--page 1]
+uproc processes editorial generate-proposal <opportunity_id>
+uproc processes editorial generate-article <opportunity_id>
+uproc processes editorial publish <opportunity_id>
+uproc processes editorial schedule <opportunity_id>
+uproc processes editorial discard <opportunity_id>
+```
+
+These commands wrap the existing `editorial-engine` business verbs.
+
+### Signing commands
+
+```bash
+uproc processes signing list [--page 1]
+uproc processes signing cancel <request_id>
+uproc processes signing reopen <request_id>
+uproc processes signing send-reminder <request_id>
+uproc processes signing sync-status <request_id>
+```
+
+These commands wrap the existing `document-signing` business verbs.
+
+### Tax commands
+
+```bash
+uproc processes tax list [--page 1]
+uproc processes tax generate <report_id>
+uproc processes tax recalculate <report_id>
+uproc processes tax validate <report_id>
+uproc processes tax export <report_id>
+```
+
+These commands wrap the existing `tax-reporting` business verbs.
+
+### Documents commands
+
+```bash
+uproc processes documents list [--page 1]
+uproc processes documents mark-ready <document_id>
+uproc processes documents mark-review <document_id>
+uproc processes documents archive <document_id>
+uproc processes documents restore <document_id>
+uproc processes documents regenerate <document_id>
+```
+
+These commands wrap the existing `document-generator` business verbs.
+
+### Inventory commands
+
+```bash
+uproc processes inventory list [--page 1]
+uproc processes inventory mark-received <order_id>
+uproc processes inventory cancel <order_id>
+uproc processes inventory send-reminder <order_id>
+```
+
+These commands wrap the existing `inventory-planning` business verbs.
+
+### Orders Ingest commands
+
+```bash
+uproc processes orders-ingest list [--page 1]
+uproc processes orders-ingest list-emails [--page 1]
+uproc processes orders-ingest reprocess <order_id>
+uproc processes orders-ingest validate <order_id>
+uproc processes orders-ingest send-to-erp <order_id>
+```
+
+These commands wrap the existing `order-ingest` business verbs.
+
+### Cases commands
+
+```bash
+uproc processes cases list [--page 1]
+uproc processes cases list-by-status [--page 1]
+uproc processes cases list-by-type [--page 1]
+uproc processes cases add-note <case_id> <content> [created_by]
+uproc processes cases close <case_id>
+uproc processes cases reopen <case_id>
+```
+
+These commands wrap the existing `case-lifecycle` business verbs.
+
+### Invoice commands
+
+```bash
+uproc processes invoice list [--page 1]
+uproc processes invoice issue <invoice_id>
+uproc processes invoice rectify <invoice_id> [reason]
+uproc processes invoice send <invoice_id> [email] [subject] [message]
+uproc processes invoice get-pdf <invoice_id>
+```
+
+These commands wrap the existing safe `invoice-generator` business verbs for already-created invoices.
+
+### Invoice lines commands
+
+```bash
+uproc processes invoice-lines list [--page 1]
+uproc processes invoice-lines add <invoice_id> <concept> [quantity] [unit_price] [tax_rate] [sort_order]
+uproc processes invoice-lines update <invoice_id> <line_id> [concept] [quantity] [unit_price] [tax_rate] [sort_order]
+uproc processes invoice-lines delete <invoice_id> <line_id>
+```
+
+These commands wrap the existing safe `invoice-generator` invoice line verbs.
+
+### Sync commands
+
+```bash
+uproc processes sync list-workflows [--page 1]
+uproc processes sync list-runs [--page 1]
+uproc processes sync list-records [--page 1]
+uproc processes sync run <workflow_id>
+uproc processes sync preview <workflow_id> [limit]
+uproc processes sync dry-run <workflow_id> [limit]
+```
+
+These commands wrap the existing `data-sync` business verbs.
+
+### Leads commands
+
+```bash
+uproc processes leads list [--page 1 --sort-field created_at --sort-order desc --filter-field status --filter-value qualified]
+uproc processes leads generate-proposal <lead_id> [template_id] [title] [description] [output_format]
+uproc processes leads send-proposal <lead_id> <mailbox_id> <to_email> <subject> <body> [proposal_url]
+uproc processes leads rerun-intelligence <lead_id>
+```
+
+These commands wrap the existing safe `lead-management` workflow verbs.
+
+### Prospecting commands
+
+```bash
+uproc processes prospecting list-strategies [--page 1]
+uproc processes prospecting list-opportunities [--page 1]
+uproc processes prospecting list-prospects [--page 1]
+uproc processes prospecting list-executions [--page 1]
+uproc processes prospecting run-discovery <strategy_id> [company] [domain]
+uproc processes prospecting send-to-leads <opportunity_id>
+```
+
+These commands wrap the existing `lead-prospecting` workflow verbs.
+
+### Reconciliation commands
+
+```bash
+uproc processes reconciliation list-entries [--page 1]
+uproc processes reconciliation list-extracts [--page 1]
+uproc processes reconciliation list-exports [--page 1]
+uproc processes reconciliation list-matches [--page 1]
+uproc processes reconciliation reconcile [process_id]
+```
+
+This command wraps the existing `financial-reconciliation` workflow verb.
+
+### Chat commands
+
+```bash
+uproc processes chat list [--page 1]
+uproc processes chat ask <domain> <question> [context] [channel] [sender_id] [origin_session_id]
+```
+
+This command wraps the existing `data-chatbot` workflow verb.
+
+All business-verb list commands use the same read flags as the generic module collection reader:
+- `--page`
+- `--sort-field`
+- `--sort-order`
+- `--filter-field`
+- `--filter-value`
 
 ### Admin commands
 

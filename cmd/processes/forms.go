@@ -9,6 +9,9 @@ func newFormsCmd() *cobra.Command {
 	}
 
 	formsCmd.AddCommand(newFormsSubmitPublicCmd())
+	formsCmd.AddCommand(newCollectionListCmd("list", "List form-generator forms", "form-generator", "forms"))
+	formsCmd.AddCommand(newCollectionListCmd("list-fields", "List form-generator fields", "form-generator", "fields"))
+	formsCmd.AddCommand(newCollectionListCmd("list-submissions", "List form-generator submissions", "form-generator", "submissions"))
 	formsCmd.AddCommand(newFormsPublishCmd())
 	formsCmd.AddCommand(newFormsArchiveCmd())
 	formsCmd.AddCommand(newFormsRestoreCmd())

@@ -9,6 +9,7 @@ func newSupportCmd() *cobra.Command {
 	}
 
 	supportCmd.AddCommand(newSupportCreateTicketCmd())
+	supportCmd.AddCommand(newCollectionListCmd("list", "List customer-care tickets", "customer-care", "tickets"))
 	supportCmd.AddCommand(newSupportAssignTicketCmd())
 	supportCmd.AddCommand(newSupportReplyTicketCmd())
 	supportCmd.AddCommand(newSupportMarkResolvedCmd())

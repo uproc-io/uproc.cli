@@ -9,6 +9,7 @@ func TestNewApprovalCmdContainsExpectedVerbs(t *testing.T) {
 	}
 
 	expected := map[string]bool{
+		"list":     false,
 		"approve":  false,
 		"reject":   false,
 		"reassign": false,

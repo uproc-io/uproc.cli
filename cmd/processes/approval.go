@@ -9,6 +9,7 @@ func newApprovalCmd() *cobra.Command {
 	}
 
 	approvalCmd.AddCommand(newApprovalApproveCmd())
+	approvalCmd.AddCommand(newCollectionListCmd("list", "List approval-management requests", "approval-management", "requests"))
 	approvalCmd.AddCommand(newApprovalRejectCmd())
 	approvalCmd.AddCommand(newApprovalReassignCmd())
 	approvalCmd.AddCommand(newApprovalCancelCmd())

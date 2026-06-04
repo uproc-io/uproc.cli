@@ -9,6 +9,9 @@ func TestNewFormsCmdContainsSubmitPublic(t *testing.T) {
 	}
 
 	expected := map[string]bool{
+		"list":                      false,
+		"list-fields":               false,
+		"list-submissions":          false,
 		"submit-public":             false,
 		"publish":                   false,
 		"archive":                   false,

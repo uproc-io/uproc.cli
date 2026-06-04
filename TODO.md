@@ -22,3 +22,14 @@ No blocked CLI items recorded yet.
 - Added the next `forms` lifecycle business verbs in CLI: `publish`, `archive`, `restore`, and `mark-submission-processed`.
 - Completed the forms CLI mini-batch with `archive-submission`.
 - Added `candidate`, `support`, and `approval` CLI business-verb groups aligned with existing backend workflows.
+- Added `campaign`, `contract`, and `order` CLI business-verb groups aligned with existing backend workflows.
+- Added `email`, `process`, and `signals` CLI business-verb groups aligned with existing backend workflows.
+- Added `editorial`, `signing`, and `tax` CLI business-verb groups aligned with existing backend workflows.
+- Added `documents`, `inventory`, and `orders-ingest` CLI business-verb groups aligned with existing backend workflows.
+- Added `cases`, `invoice`, and `sync` CLI business-verb groups aligned with existing backend workflows.
+- Added `leads`, `prospecting`, and `reconciliation` CLI business-verb groups aligned with existing backend workflows.
+- Added `chat` and `invoice-lines` CLI business-verb groups aligned with existing backend workflows.
+- Extended `leads` with `send-proposal` aligned with the existing backend workflow.
+- Extended `invoice` with `get-pdf` aligned with the existing backend workflow.
+- Extended `leads` with `list` aligned with the existing backend collection read flow.
+- Added business-verb list/read commands across the curated CLI groups using backend collection metadata.

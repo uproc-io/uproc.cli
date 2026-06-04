@@ -11,6 +11,17 @@ All notable changes in `bizzmod-cli` should be documented in this file.
 - Extended the new `uproc processes forms` business-verb group with first-class lifecycle commands: `publish`, `archive`, `restore`, and `mark-submission-processed`.
 - Completed the forms mini-batch with `archive-submission`.
 - Added the next three business-verb CLI groups: `candidate`, `support`, and `approval`, aligned with existing backend/MCP workflows for `candidate-evaluation`, `customer-care`, and `approval-management`.
+- Added the next Batch 1 CLI business groups: `campaign`, `contract`, and `order`, aligned with existing backend/MCP workflows for `campaign-automation`, `contract-lifecycle`, and `order-track`.
+- Added the next Batch 2 CLI business groups: `email`, `process`, and `signals`, aligned with existing backend/MCP workflows for `email-assistant`, `process-visibility`, and `business-signals`.
+- Added the next Batch 3 CLI business groups: `editorial`, `signing`, and `tax`, aligned with existing backend/MCP workflows for `editorial-engine`, `document-signing`, and `tax-reporting`.
+- Added the next Batch 4 CLI business groups: `documents`, `inventory`, and `orders-ingest`, aligned with existing backend/MCP workflows for `document-generator`, `inventory-planning`, and `order-ingest`.
+- Added the next Batch 5 CLI business groups: `cases`, `invoice`, and `sync`, aligned with existing backend/MCP workflows for `case-lifecycle`, selected safe `invoice-generator` actions, and `data-sync`.
+- Added the next Batch 6 CLI business groups: `leads`, `prospecting`, and `reconciliation`, aligned with existing backend/MCP workflows for selected `lead-management`, `lead-prospecting`, and `financial-reconciliation` actions.
+- Added the next Batch 7 CLI business groups: `chat` and `invoice-lines`, aligned with existing backend/MCP workflows for `data-chatbot` and safe `invoice-generator` invoice-line actions.
+- Extended `leads` with `send-proposal`, aligned with the existing `lead-management.send_lead_proposal` backend action.
+- Extended `invoice` with `get-pdf`, aligned with the existing `invoice-generator.get_invoice_pdf` backend action that returns a preview URL.
+- Extended `leads` with `list`, exposing the `lead-management/leads` collection through the same paging, sorting, and filtering semantics as the generic collection command.
+- Added business-verb list/read commands across the curated CLI groups, mapping each group to its real backend collections through the standard `/collections/*` endpoints.
 
 ### Verification
 - `go test ./...`
