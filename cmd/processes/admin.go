@@ -1,8 +1,10 @@
 package processes
 
 import (
+	"encoding/base64"
 	"encoding/json"
 	"fmt"
+	"os"
 	"strings"
 
 	"github.com/spf13/cobra"
@@ -37,6 +39,9 @@ func newAdminUsersCmd() *cobra.Command {
 	usersCmd.AddCommand(newAdminUsersGetCmd())
 	usersCmd.AddCommand(newAdminUsersCreateCmd())
 	usersCmd.AddCommand(newAdminUsersUpdateCmd())
+	usersCmd.AddCommand(newAdminUsersTemplateCmd())
+	usersCmd.AddCommand(newAdminUsersBulkCreateCmd())
+	usersCmd.AddCommand(newAdminUsersResetPasswordCmd())
 
 	return usersCmd
 }
@@ -658,5 +663,87 @@ Examples:
 
 	cmd.Flags().StringVar(&zipBase64, "zip-base64", "", "ZIP file content as base64 string")
 	cmd.Flags().StringVar(&mode, "mode", "upsert", "Import mode: append, replace, or upsert")
+	return cmd
+}
+
+func newAdminUsersTemplateCmd() *cobra.Command {
+	return &cobra.Command{
+		Use:   "template",
+		Short: "Download CSV import template for users",
+		RunE: func(cmd *cobra.Command, args []string) error {
+			client, err := mustClient()
+			if err != nil {
+				return err
+			}
+			body, _ := json.Marshal(map[string]any{
+				"name":      "admin.users.import_template",
+				"arguments": map[string]any{},
+			})
+			respBody, status, reqErr := client.Do("POST", "/api/v1/external/mcp/call", body)
+			return printResponse(cmd, respBody, status, reqErr)
+		},
+	}
+}
+
+func newAdminUsersBulkCreateCmd() *cobra.Command {
+	var csvFile string
+	var confirm bool
+
+	cmd := &cobra.Command{
+		Use:   "bulk-create",
+		Short: "Bulk create users from a CSV file",
+		RunE: func(cmd *cobra.Command, args []string) error {
+			content, err := os.ReadFile(csvFile)
+			if err != nil {
+				return fmt.Errorf("cannot read file: %w", err)
+			}
+			client, err := mustClient()
+			if err != nil {
+				return err
+			}
+			body, _ := json.Marshal(map[string]any{
+				"name": "admin.users.bulk_create",
+				"arguments": map[string]any{
+					"csv_base64": base64.StdEncoding.EncodeToString(content),
+					"confirm":    confirm,
+				},
+			})
+			respBody, status, reqErr := client.Do("POST", "/api/v1/external/mcp/call", body)
+			return printResponse(cmd, respBody, status, reqErr)
+		},
+	}
+
+	cmd.Flags().StringVarP(&csvFile, "file", "f", "", "CSV file path")
+	cmd.Flags().BoolVar(&confirm, "confirm", false, "Confirm import")
+	_ = cmd.MarkFlagRequired("file")
+	return cmd
+}
+
+func newAdminUsersResetPasswordCmd() *cobra.Command {
+	var userID int
+
+	cmd := &cobra.Command{
+		Use:   "reset-password",
+		Short: "Send password reset email to a user",
+		RunE: func(cmd *cobra.Command, args []string) error {
+			if userID <= 0 {
+				return fmt.Errorf("--user-id is required")
+			}
+			client, err := mustClient()
+			if err != nil {
+				return err
+			}
+			body, _ := json.Marshal(map[string]any{
+				"name": "admin.users.send_reset_password",
+				"arguments": map[string]any{
+					"user_id": userID,
+				},
+			})
+			respBody, status, reqErr := client.Do("POST", "/api/v1/external/mcp/call", body)
+			return printResponse(cmd, respBody, status, reqErr)
+		},
+	}
+
+	cmd.Flags().IntVar(&userID, "user-id", 0, "User ID to reset password for")
 	return cmd
 }
