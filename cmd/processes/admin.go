@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"os"
 	"strings"
+	"time"
 
 	"github.com/spf13/cobra"
 )
@@ -609,7 +610,31 @@ Examples:
 			})
 
 			respBody, status, reqErr := client.Do("POST", "/api/v1/external/mcp/call", body)
-			return printResponse(cmd, respBody, status, reqErr)
+			if reqErr != nil {
+				return printResponse(cmd, respBody, status, reqErr)
+			}
+			if status != 200 {
+				return printResponse(cmd, respBody, status, nil)
+			}
+			var resp struct {
+				Success bool `json:"success"`
+				Data    *struct {
+					ZipBase64 string `json:"zip_base64"`
+				} `json:"data"`
+			}
+			if err := json.Unmarshal(respBody, &resp); err != nil || !resp.Success || resp.Data == nil || resp.Data.ZipBase64 == "" {
+				return printResponse(cmd, respBody, status, nil)
+			}
+			decoded, err := base64.StdEncoding.DecodeString(resp.Data.ZipBase64)
+			if err != nil {
+				return fmt.Errorf("failed to decode zip: %w", err)
+			}
+			filename := fmt.Sprintf("export-customer-%d-%s.zip", customerID, time.Now().Format("20060102-150405"))
+			if err := os.WriteFile(filename, decoded, 0644); err != nil {
+				return fmt.Errorf("failed to write file: %w", err)
+			}
+			fmt.Fprintf(cmd.OutOrStdout(), "✅ Export saved to %s (%d bytes)\n", filename, len(decoded))
+			return nil
 		},
 	}
 
