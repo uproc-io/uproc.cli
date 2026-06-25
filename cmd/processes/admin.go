@@ -595,6 +595,7 @@ Examples:
 				return fmt.Errorf("--customer-id is required")
 			}
 
+			fmt.Fprintf(cmd.ErrOrStderr(), "📦 Exporting customer %d (this may take a while)...\n", customerID)
 			client, err := mustClient()
 			if err != nil {
 				return err
