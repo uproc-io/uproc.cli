@@ -1,6 +1,7 @@
 package processes
 
 import (
+	"encoding/json"
 	"fmt"
 	"strings"
 
@@ -111,6 +112,8 @@ func newAdminCustomersCmd() *cobra.Command {
 	customersCmd.AddCommand(newAdminCustomersGetCmd())
 	customersCmd.AddCommand(newAdminCustomersCreateCmd())
 	customersCmd.AddCommand(newAdminCustomersUpdateCmd())
+	customersCmd.AddCommand(newAdminCustomersExportCmd())
+	customersCmd.AddCommand(newAdminCustomersImportCmd())
 
 	return customersCmd
 }
@@ -565,4 +568,95 @@ func newAdminChangelogCmd() *cobra.Command {
 			return printResponse(cmd, body, status, reqErr)
 		},
 	}
+}
+
+func newAdminCustomersExportCmd() *cobra.Command {
+	var customerID int
+	var includeFiles, includeLogs bool
+
+	cmd := &cobra.Command{
+		Use:   "export",
+		Short: "Export all customer data to a ZIP",
+		Long: `Export ALL customer data (160+ tables, DM rows, optional files) as a ZIP file.
+All data is exported synchronously and returned as base64 in the response.
+
+Examples:
+  uproc admin customers export --customer-id 51
+  uproc admin customers export --customer-id 51 --include-files
+  uproc admin customers export --customer-id 51 --include-logs`,
+		RunE: func(cmd *cobra.Command, args []string) error {
+			if customerID <= 0 {
+				return fmt.Errorf("--customer-id is required")
+			}
+
+			client, err := mustClient()
+			if err != nil {
+				return err
+			}
+
+			body, _ := json.Marshal(map[string]any{
+				"name": "admin.customer.export_all",
+				"arguments": map[string]any{
+					"customer_id":   customerID,
+					"include_files": includeFiles,
+					"include_logs":  includeLogs,
+				},
+			})
+
+			respBody, status, reqErr := client.Do("POST", "/api/v1/external/mcp/call", body)
+			return printResponse(cmd, respBody, status, reqErr)
+		},
+	}
+
+	cmd.Flags().IntVar(&customerID, "customer-id", 0, "Customer ID to export")
+	cmd.Flags().BoolVar(&includeFiles, "include-files", false, "Include MinIO file blobs")
+	cmd.Flags().BoolVar(&includeLogs, "include-logs", false, "Include log tables")
+	return cmd
+}
+
+func newAdminCustomersImportCmd() *cobra.Command {
+	var zipBase64 string
+	var mode string
+
+	cmd := &cobra.Command{
+		Use:   "import",
+		Short: "Import customer data from a ZIP (base64 or file path)",
+		Long: `Import ALL customer data from a previously exported ZIP file.
+The ZIP file content must be provided as a base64 string or via stdin.
+Default mode is "upsert" (insert or update existing records).
+
+Examples:
+  uproc admin customers import --zip-base64 "$(cat export.zip | base64)"
+  uproc admin customers import --zip-base64 "$(cat export.zip | base64)" --mode replace
+  cat export.zip | base64 | xargs -0 uproc admin customers import --mode upsert`,
+		RunE: func(cmd *cobra.Command, args []string) error {
+			if zipBase64 == "" {
+				return fmt.Errorf("--zip-base64 is required (use file path with --file or pipe base64 content)")
+			}
+			if mode == "" {
+				mode = "upsert"
+			}
+
+			client, err := mustClient()
+			if err != nil {
+				return err
+			}
+
+			body, _ := json.Marshal(map[string]any{
+				"name": "admin.customer.import_all",
+				"arguments": map[string]any{
+					"zip_base64": zipBase64,
+					"mode":       mode,
+					"confirm":    false,
+				},
+			})
+
+			respBody, status, reqErr := client.Do("POST", "/api/v1/external/mcp/call", body)
+			return printResponse(cmd, respBody, status, reqErr)
+		},
+	}
+
+	cmd.Flags().StringVar(&zipBase64, "zip-base64", "", "ZIP file content as base64 string")
+	cmd.Flags().StringVar(&mode, "mode", "upsert", "Import mode: append, replace, or upsert")
+	return cmd
 }
