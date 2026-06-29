@@ -274,8 +274,38 @@ func newAdminModulesCmd() *cobra.Command {
 
 	modulesCmd.AddCommand(newAdminModulesListCmd())
 	modulesCmd.AddCommand(newAdminModulesGetCmd())
+	modulesCmd.AddCommand(newAdminModulesDeleteCmd())
 
 	return modulesCmd
+}
+
+func newAdminModulesDeleteCmd() *cobra.Command {
+	var confirm bool
+
+	cmd := &cobra.Command{
+		Use:   "delete <module_slug>",
+		Short: "Delete a module from the database (cascade)",
+		Long: `Delete a module and all its associated data from the database.
+Without --confirm, shows a preview of what would be deleted.
+
+Examples:
+  uproc admin modules delete document-modules
+  uproc admin modules delete helpers --confirm`,
+		Args: cobra.ExactArgs(1),
+		RunE: func(cmd *cobra.Command, args []string) error {
+			client, err := mustClient()
+			if err != nil {
+				return err
+			}
+
+			path := fmt.Sprintf("/api/v1/external/admin/modules/%s?confirm=%v", args[0], confirm)
+			body, status, reqErr := client.Do("DELETE", path, nil)
+			return printResponse(cmd, body, status, reqErr)
+		},
+	}
+
+	cmd.Flags().BoolVar(&confirm, "confirm", false, "Execute cascade deletion (default false = preview only)")
+	return cmd
 }
 
 func newAdminModulesListCmd() *cobra.Command {
