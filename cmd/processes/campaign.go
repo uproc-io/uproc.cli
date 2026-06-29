@@ -2,10 +2,10 @@ package processes
 
 import "github.com/spf13/cobra"
 
-func newCampaignCmd() *cobra.Command {
+func newCampaignAutomationCmd() *cobra.Command {
 	campaignCmd := &cobra.Command{
-		Use:   "campaign",
-		Short: "Business verbs for campaign automation workflows",
+		Use:   "campaign-automation",
+		Short: "Business verbs for campaign-automation",
 	}
 
 	campaignCmd.AddCommand(newCampaignPreviewAudienceCmd())
@@ -16,6 +16,14 @@ func newCampaignCmd() *cobra.Command {
 	campaignCmd.AddCommand(newCampaignActivateCmd())
 
 	return campaignCmd
+}
+
+func newCampaignCmd() *cobra.Command {
+	cmd := newCampaignAutomationCmd()
+	cmd.Use = "campaign"
+	cmd.Hidden = true
+	cmd.Long = "DEPRECATED: Use \"campaign-automation\" instead.\n\n" + cmd.Long
+	return cmd
 }
 
 func newCampaignPreviewAudienceCmd() *cobra.Command {

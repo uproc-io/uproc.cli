@@ -2,9 +2,9 @@ package processes
 
 import "github.com/spf13/cobra"
 
-func newApprovalCmd() *cobra.Command {
+func newApprovalManagementCmd() *cobra.Command {
 	approvalCmd := &cobra.Command{
-		Use:   "approval",
+		Use:   "approval-management",
 		Short: "Business verbs for approval workflows",
 	}
 
@@ -15,6 +15,14 @@ func newApprovalCmd() *cobra.Command {
 	approvalCmd.AddCommand(newApprovalCancelCmd())
 
 	return approvalCmd
+}
+
+func newApprovalCmd() *cobra.Command {
+	cmd := newApprovalManagementCmd()
+	cmd.Use = "approval"
+	cmd.Hidden = true
+	cmd.Long = "DEPRECATED: use 'approval-management' instead"
+	return cmd
 }
 
 func newApprovalApproveCmd() *cobra.Command {

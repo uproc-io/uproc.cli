@@ -2,10 +2,10 @@ package processes
 
 import "github.com/spf13/cobra"
 
-func newSyncCmd() *cobra.Command {
+func newDataSyncCmd() *cobra.Command {
 	syncCmd := &cobra.Command{
-		Use:   "sync",
-		Short: "Business verbs for data sync workflows",
+		Use:   "data-sync",
+		Short: "Business verbs for data-sync",
 	}
 
 	syncCmd.AddCommand(newSyncRunCmd())
@@ -16,6 +16,14 @@ func newSyncCmd() *cobra.Command {
 	syncCmd.AddCommand(newSyncDryRunCmd())
 
 	return syncCmd
+}
+
+func newSyncCmd() *cobra.Command {
+	cmd := newDataSyncCmd()
+	cmd.Use = "sync"
+	cmd.Hidden = true
+	cmd.Long = "DEPRECATED: Use \"data-sync\" instead.\n\n" + cmd.Long
+	return cmd
 }
 
 func newSyncRunCmd() *cobra.Command {

@@ -3,7 +3,7 @@ package processes
 import "testing"
 
 func TestNewEmailCmdContainsExpectedVerbs(t *testing.T) {
-	cmd := newEmailCmd()
+	cmd := newEmailAssistantCmd()
 	if cmd == nil {
 		t.Fatal("expected email command")
 	}

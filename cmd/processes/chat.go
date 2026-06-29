@@ -2,9 +2,9 @@ package processes
 
 import "github.com/spf13/cobra"
 
-func newChatCmd() *cobra.Command {
+func newDataChatbotCmd() *cobra.Command {
 	chatCmd := &cobra.Command{
-		Use:   "chat",
+		Use:   "data-chatbot",
 		Short: "Business verbs for data chatbot workflows",
 	}
 
@@ -12,6 +12,14 @@ func newChatCmd() *cobra.Command {
 	chatCmd.AddCommand(newCollectionListCmd("list", "List chatbot queries", "data-chatbot", "queries"))
 
 	return chatCmd
+}
+
+func newChatCmd() *cobra.Command {
+	cmd := newDataChatbotCmd()
+	cmd.Use = "chat"
+	cmd.Hidden = true
+	cmd.Long = "DEPRECATED: use 'data-chatbot' instead"
+	return cmd
 }
 
 func newChatAskCmd() *cobra.Command {

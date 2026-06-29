@@ -2,10 +2,10 @@ package processes
 
 import "github.com/spf13/cobra"
 
-func newEditorialCmd() *cobra.Command {
+func newEditorialEngineCmd() *cobra.Command {
 	editorialCmd := &cobra.Command{
-		Use:   "editorial",
-		Short: "Business verbs for editorial engine workflows",
+		Use:   "editorial-engine",
+		Short: "Business verbs for editorial-engine",
 	}
 
 	editorialCmd.AddCommand(newEditorialGenerateProposalCmd())
@@ -19,6 +19,14 @@ func newEditorialCmd() *cobra.Command {
 	editorialCmd.AddCommand(newEditorialDiscardCmd())
 
 	return editorialCmd
+}
+
+func newEditorialCmd() *cobra.Command {
+	cmd := newEditorialEngineCmd()
+	cmd.Use = "editorial"
+	cmd.Hidden = true
+	cmd.Long = "DEPRECATED: Use \"editorial-engine\" instead.\n\n" + cmd.Long
+	return cmd
 }
 
 func newEditorialGenerateProposalCmd() *cobra.Command {

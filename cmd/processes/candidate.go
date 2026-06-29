@@ -2,9 +2,9 @@ package processes
 
 import "github.com/spf13/cobra"
 
-func newCandidateCmd() *cobra.Command {
+func newCandidateEvaluationCmd() *cobra.Command {
 	candidateCmd := &cobra.Command{
-		Use:   "candidate",
+		Use:   "candidate-evaluation",
 		Short: "Business verbs for candidate evaluation workflows",
 	}
 
@@ -21,6 +21,14 @@ func newCandidateCmd() *cobra.Command {
 	candidateCmd.AddCommand(newCollectionListCmd("list-stage-events", "List candidate stage events", "candidate-evaluation", "stage_events"))
 
 	return candidateCmd
+}
+
+func newCandidateCmd() *cobra.Command {
+	cmd := newCandidateEvaluationCmd()
+	cmd.Use = "candidate"
+	cmd.Hidden = true
+	cmd.Long = "DEPRECATED: use 'candidate-evaluation' instead"
+	return cmd
 }
 
 func newCandidateCreateProfileCmd() *cobra.Command {

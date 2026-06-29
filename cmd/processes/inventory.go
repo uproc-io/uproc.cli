@@ -2,10 +2,10 @@ package processes
 
 import "github.com/spf13/cobra"
 
-func newInventoryCmd() *cobra.Command {
+func newInventoryPlanningCmd() *cobra.Command {
 	inventoryCmd := &cobra.Command{
-		Use:   "inventory",
-		Short: "Business verbs for inventory planning workflows",
+		Use:   "inventory-planning",
+		Short: "Business verbs for inventory-planning",
 	}
 
 	inventoryCmd.AddCommand(newInventoryMarkReceivedCmd())
@@ -14,6 +14,14 @@ func newInventoryCmd() *cobra.Command {
 	inventoryCmd.AddCommand(newInventorySendReminderCmd())
 
 	return inventoryCmd
+}
+
+func newInventoryCmd() *cobra.Command {
+	cmd := newInventoryPlanningCmd()
+	cmd.Use = "inventory"
+	cmd.Hidden = true
+	cmd.Long = "DEPRECATED: Use \"inventory-planning\" instead.\n\n" + cmd.Long
+	return cmd
 }
 
 func newInventoryMarkReceivedCmd() *cobra.Command {

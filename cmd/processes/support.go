@@ -2,9 +2,9 @@ package processes
 
 import "github.com/spf13/cobra"
 
-func newSupportCmd() *cobra.Command {
+func newCustomerCareCmd() *cobra.Command {
 	supportCmd := &cobra.Command{
-		Use:   "support",
+		Use:   "customer-care",
 		Short: "Business verbs for customer care workflows",
 	}
 
@@ -17,6 +17,14 @@ func newSupportCmd() *cobra.Command {
 	supportCmd.AddCommand(newSupportReopenTicketCmd())
 
 	return supportCmd
+}
+
+func newSupportCmd() *cobra.Command {
+	cmd := newCustomerCareCmd()
+	cmd.Use = "support"
+	cmd.Hidden = true
+	cmd.Long = "DEPRECATED: use 'customer-care' instead"
+	return cmd
 }
 
 func newSupportCreateTicketCmd() *cobra.Command {

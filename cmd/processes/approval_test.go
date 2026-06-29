@@ -3,7 +3,7 @@ package processes
 import "testing"
 
 func TestNewApprovalCmdContainsExpectedVerbs(t *testing.T) {
-	cmd := newApprovalCmd()
+	cmd := newApprovalManagementCmd()
 	if cmd == nil {
 		t.Fatal("expected approval command")
 	}

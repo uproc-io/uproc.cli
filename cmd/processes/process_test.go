@@ -3,7 +3,7 @@ package processes
 import "testing"
 
 func TestNewProcessCmdContainsExpectedVerbs(t *testing.T) {
-	cmd := newProcessCmd()
+	cmd := newProcessVisibilityCmd()
 	if cmd == nil {
 		t.Fatal("expected process command")
 	}

@@ -3,7 +3,7 @@ package processes
 import "testing"
 
 func TestNewSigningCmdContainsExpectedVerbs(t *testing.T) {
-	cmd := newSigningCmd()
+	cmd := newDocumentSigningCmd()
 	if cmd == nil {
 		t.Fatal("expected signing command")
 	}

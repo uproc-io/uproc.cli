@@ -2,10 +2,10 @@ package processes
 
 import "github.com/spf13/cobra"
 
-func newSignalsCmd() *cobra.Command {
+func newMarketSignalsCmd() *cobra.Command {
 	signalsCmd := &cobra.Command{
-		Use:   "signals",
-		Short: "Business verbs for market signals workflows",
+		Use:   "market-signals",
+		Short: "Business verbs for market-signals",
 	}
 
 	signalsCmd.AddCommand(newSignalsApproveCmd())
@@ -18,6 +18,14 @@ func newSignalsCmd() *cobra.Command {
 	signalsCmd.AddCommand(newSignalsCloseCmd())
 
 	return signalsCmd
+}
+
+func newSignalsCmd() *cobra.Command {
+	cmd := newMarketSignalsCmd()
+	cmd.Use = "signals"
+	cmd.Hidden = true
+	cmd.Long = "DEPRECATED: Use \"market-signals\" instead.\n\n" + cmd.Long
+	return cmd
 }
 
 func newSignalsApproveCmd() *cobra.Command {

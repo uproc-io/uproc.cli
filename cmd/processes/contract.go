@@ -2,10 +2,10 @@ package processes
 
 import "github.com/spf13/cobra"
 
-func newContractCmd() *cobra.Command {
+func newContractLifecycleCmd() *cobra.Command {
 	contractCmd := &cobra.Command{
-		Use:   "contract",
-		Short: "Business verbs for contract lifecycle workflows",
+		Use:   "contract-lifecycle",
+		Short: "Business verbs for contract-lifecycle",
 	}
 
 	contractCmd.AddCommand(newContractRenewCmd())
@@ -16,6 +16,14 @@ func newContractCmd() *cobra.Command {
 	contractCmd.AddCommand(newContractUpdateCmd())
 
 	return contractCmd
+}
+
+func newContractCmd() *cobra.Command {
+	cmd := newContractLifecycleCmd()
+	cmd.Use = "contract"
+	cmd.Hidden = true
+	cmd.Long = "DEPRECATED: Use \"contract-lifecycle\" instead.\n\n" + cmd.Long
+	return cmd
 }
 
 func newContractRenewCmd() *cobra.Command {

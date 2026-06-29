@@ -3,7 +3,7 @@ package processes
 import "testing"
 
 func TestNewChatCmdContainsExpectedVerbs(t *testing.T) {
-	cmd := newChatCmd()
+	cmd := newDataChatbotCmd()
 	if cmd == nil {
 		t.Fatal("expected chat command")
 	}

@@ -7,10 +7,10 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func newLeadsCmd() *cobra.Command {
+func newLeadManagementCmd() *cobra.Command {
 	leadsCmd := &cobra.Command{
-		Use:   "leads",
-		Short: "Business verbs for lead management workflows",
+		Use:   "lead-management",
+		Short: "Business verbs for lead-management",
 	}
 
 	leadsCmd.AddCommand(newLeadsGenerateProposalCmd())
@@ -19,6 +19,14 @@ func newLeadsCmd() *cobra.Command {
 	leadsCmd.AddCommand(newLeadsRerunIntelligenceCmd())
 
 	return leadsCmd
+}
+
+func newLeadsCmd() *cobra.Command {
+	cmd := newLeadManagementCmd()
+	cmd.Use = "leads"
+	cmd.Hidden = true
+	cmd.Long = "DEPRECATED: Use \"lead-management\" instead.\n\n" + cmd.Long
+	return cmd
 }
 
 func newLeadsListCmd() *cobra.Command {

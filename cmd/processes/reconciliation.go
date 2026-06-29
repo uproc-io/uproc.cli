@@ -2,10 +2,10 @@ package processes
 
 import "github.com/spf13/cobra"
 
-func newReconciliationCmd() *cobra.Command {
+func newFinancialReconciliationCmd() *cobra.Command {
 	reconciliationCmd := &cobra.Command{
-		Use:   "reconciliation",
-		Short: "Business verbs for financial reconciliation workflows",
+		Use:   "financial-reconciliation",
+		Short: "Business verbs for financial-reconciliation",
 	}
 
 	reconciliationCmd.AddCommand(newReconciliationRunCmd())
@@ -15,6 +15,14 @@ func newReconciliationCmd() *cobra.Command {
 	reconciliationCmd.AddCommand(newCollectionListCmd("list-matches", "List reconciliation matches", "financial-reconciliation", "matches"))
 
 	return reconciliationCmd
+}
+
+func newReconciliationCmd() *cobra.Command {
+	cmd := newFinancialReconciliationCmd()
+	cmd.Use = "reconciliation"
+	cmd.Hidden = true
+	cmd.Long = "DEPRECATED: Use \"financial-reconciliation\" instead.\n\n" + cmd.Long
+	return cmd
 }
 
 func newReconciliationRunCmd() *cobra.Command {

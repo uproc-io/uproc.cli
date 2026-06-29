@@ -2,9 +2,9 @@ package processes
 
 import "github.com/spf13/cobra"
 
-func newEmailCmd() *cobra.Command {
+func newEmailAssistantCmd() *cobra.Command {
 	emailCmd := &cobra.Command{
-		Use:   "email",
+		Use:   "email-assistant",
 		Short: "Business verbs for email assistant workflows",
 	}
 
@@ -13,6 +13,14 @@ func newEmailCmd() *cobra.Command {
 	emailCmd.AddCommand(newEmailArchiveCmd())
 
 	return emailCmd
+}
+
+func newEmailCmd() *cobra.Command {
+	cmd := newEmailAssistantCmd()
+	cmd.Use = "email"
+	cmd.Hidden = true
+	cmd.Long = "DEPRECATED: use 'email-assistant' instead"
+	return cmd
 }
 
 func newEmailMarkProcessedCmd() *cobra.Command {

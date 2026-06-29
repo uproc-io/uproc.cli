@@ -2,9 +2,9 @@ package processes
 
 import "github.com/spf13/cobra"
 
-func newOrderCmd() *cobra.Command {
+func newOrderTrackCmd() *cobra.Command {
 	orderCmd := &cobra.Command{
-		Use:   "order",
+		Use:   "order-track",
 		Short: "Business verbs for tracked order workflows",
 	}
 
@@ -14,6 +14,14 @@ func newOrderCmd() *cobra.Command {
 	orderCmd.AddCommand(newOrderSendReminderCmd())
 
 	return orderCmd
+}
+
+func newOrderCmd() *cobra.Command {
+	cmd := newOrderTrackCmd()
+	cmd.Use = "order"
+	cmd.Hidden = true
+	cmd.Long = "DEPRECATED: use 'order-track' instead"
+	return cmd
 }
 
 func newOrderMarkReceivedCmd() *cobra.Command {

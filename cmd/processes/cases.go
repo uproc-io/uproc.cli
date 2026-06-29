@@ -2,10 +2,10 @@ package processes
 
 import "github.com/spf13/cobra"
 
-func newCasesCmd() *cobra.Command {
+func newCaseLifecycleCmd() *cobra.Command {
 	casesCmd := &cobra.Command{
-		Use:   "cases",
-		Short: "Business verbs for case lifecycle workflows",
+		Use:   "case-lifecycle",
+		Short: "Business verbs for case-lifecycle",
 	}
 
 	casesCmd.AddCommand(newCasesAddNoteCmd())
@@ -16,6 +16,14 @@ func newCasesCmd() *cobra.Command {
 	casesCmd.AddCommand(newCasesReopenCmd())
 
 	return casesCmd
+}
+
+func newCasesCmd() *cobra.Command {
+	cmd := newCaseLifecycleCmd()
+	cmd.Use = "cases"
+	cmd.Hidden = true
+	cmd.Long = "DEPRECATED: Use \"case-lifecycle\" instead.\n\n" + cmd.Long
+	return cmd
 }
 
 func newCasesAddNoteCmd() *cobra.Command {

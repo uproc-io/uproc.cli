@@ -3,17 +3,21 @@ package processes
 import "testing"
 
 func TestNewInvoiceCmdContainsExpectedVerbs(t *testing.T) {
-	cmd := newInvoiceCmd()
+	cmd := newInvoiceGeneratorCmd()
 	if cmd == nil {
 		t.Fatal("expected invoice command")
 	}
 
 	expected := map[string]bool{
-		"list":    false,
-		"issue":   false,
-		"rectify": false,
-		"send":    false,
-		"get-pdf": false,
+		"list":       false,
+		"issue":      false,
+		"rectify":    false,
+		"send":       false,
+		"get-pdf":    false,
+		"add":        false,
+		"list-lines": false,
+		"update":     false,
+		"delete":     false,
 	}
 
 	for _, child := range cmd.Commands() {

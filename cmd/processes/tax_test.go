@@ -3,7 +3,7 @@ package processes
 import "testing"
 
 func TestNewTaxCmdContainsExpectedVerbs(t *testing.T) {
-	cmd := newTaxCmd()
+	cmd := newTaxReportingCmd()
 	if cmd == nil {
 		t.Fatal("expected tax command")
 	}

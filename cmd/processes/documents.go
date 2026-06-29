@@ -2,9 +2,9 @@ package processes
 
 import "github.com/spf13/cobra"
 
-func newDocumentsCmd() *cobra.Command {
+func newDocumentGeneratorCmd() *cobra.Command {
 	documentsCmd := &cobra.Command{
-		Use:   "documents",
+		Use:   "document-generator",
 		Short: "Business verbs for document generator workflows",
 	}
 
@@ -16,6 +16,14 @@ func newDocumentsCmd() *cobra.Command {
 	documentsCmd.AddCommand(newDocumentsRegenerateCmd())
 
 	return documentsCmd
+}
+
+func newDocumentsCmd() *cobra.Command {
+	cmd := newDocumentGeneratorCmd()
+	cmd.Use = "documents"
+	cmd.Hidden = true
+	cmd.Long = "DEPRECATED: use 'document-generator' instead"
+	return cmd
 }
 
 func newDocumentsMarkReadyCmd() *cobra.Command {

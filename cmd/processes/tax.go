@@ -2,9 +2,9 @@ package processes
 
 import "github.com/spf13/cobra"
 
-func newTaxCmd() *cobra.Command {
+func newTaxReportingCmd() *cobra.Command {
 	taxCmd := &cobra.Command{
-		Use:   "tax",
+		Use:   "tax-reporting",
 		Short: "Business verbs for tax reporting workflows",
 	}
 
@@ -15,6 +15,14 @@ func newTaxCmd() *cobra.Command {
 	taxCmd.AddCommand(newTaxExportCmd())
 
 	return taxCmd
+}
+
+func newTaxCmd() *cobra.Command {
+	cmd := newTaxReportingCmd()
+	cmd.Use = "tax"
+	cmd.Hidden = true
+	cmd.Long = "DEPRECATED: use 'tax-reporting' instead"
+	return cmd
 }
 
 func newTaxGenerateCmd() *cobra.Command {

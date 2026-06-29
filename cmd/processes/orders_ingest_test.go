@@ -3,7 +3,7 @@ package processes
 import "testing"
 
 func TestNewOrdersIngestCmdContainsExpectedVerbs(t *testing.T) {
-	cmd := newOrdersIngestCmd()
+	cmd := newOrderIngestCmd()
 	if cmd == nil {
 		t.Fatal("expected orders-ingest command")
 	}

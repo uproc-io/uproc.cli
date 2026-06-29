@@ -3,7 +3,7 @@ package processes
 import "testing"
 
 func TestNewDocumentsCmdContainsExpectedVerbs(t *testing.T) {
-	cmd := newDocumentsCmd()
+	cmd := newDocumentGeneratorCmd()
 	if cmd == nil {
 		t.Fatal("expected documents command")
 	}

@@ -3,22 +3,11 @@ package processes
 import "github.com/spf13/cobra"
 
 func newFormsCmd() *cobra.Command {
-	formsCmd := &cobra.Command{
-		Use:   "forms",
-		Short: "Business verbs for forms workflows",
-	}
-
-	formsCmd.AddCommand(newFormsSubmitPublicCmd())
-	formsCmd.AddCommand(newCollectionListCmd("list", "List form-generator forms", "form-generator", "forms"))
-	formsCmd.AddCommand(newCollectionListCmd("list-fields", "List form-generator fields", "form-generator", "fields"))
-	formsCmd.AddCommand(newCollectionListCmd("list-submissions", "List form-generator submissions", "form-generator", "submissions"))
-	formsCmd.AddCommand(newFormsPublishCmd())
-	formsCmd.AddCommand(newFormsArchiveCmd())
-	formsCmd.AddCommand(newFormsRestoreCmd())
-	formsCmd.AddCommand(newFormsMarkSubmissionProcessedCmd())
-	formsCmd.AddCommand(newFormsArchiveSubmissionCmd())
-
-	return formsCmd
+	cmd := newFormGeneratorCmd()
+	cmd.Use = "forms"
+	cmd.Hidden = true
+	cmd.Short = "Alias for form-generator"
+	return cmd
 }
 
 func newFormsSubmitPublicCmd() *cobra.Command {

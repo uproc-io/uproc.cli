@@ -2,10 +2,10 @@ package processes
 
 import "github.com/spf13/cobra"
 
-func newProspectingCmd() *cobra.Command {
+func newLeadProspectingCmd() *cobra.Command {
 	prospectingCmd := &cobra.Command{
-		Use:   "prospecting",
-		Short: "Business verbs for lead prospecting workflows",
+		Use:   "lead-prospecting",
+		Short: "Business verbs for lead-prospecting",
 	}
 
 	prospectingCmd.AddCommand(newProspectingRunDiscoveryCmd())
@@ -16,6 +16,14 @@ func newProspectingCmd() *cobra.Command {
 	prospectingCmd.AddCommand(newProspectingSendToLeadsCmd())
 
 	return prospectingCmd
+}
+
+func newProspectingCmd() *cobra.Command {
+	cmd := newLeadProspectingCmd()
+	cmd.Use = "prospecting"
+	cmd.Hidden = true
+	cmd.Long = "DEPRECATED: Use \"lead-prospecting\" instead.\n\n" + cmd.Long
+	return cmd
 }
 
 func newProspectingRunDiscoveryCmd() *cobra.Command {

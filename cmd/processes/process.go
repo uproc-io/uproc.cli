@@ -2,9 +2,9 @@ package processes
 
 import "github.com/spf13/cobra"
 
-func newProcessCmd() *cobra.Command {
+func newProcessVisibilityCmd() *cobra.Command {
 	processCmd := &cobra.Command{
-		Use:   "process",
+		Use:   "process-visibility",
 		Short: "Business verbs for process visibility workflows",
 	}
 
@@ -14,6 +14,14 @@ func newProcessCmd() *cobra.Command {
 	processCmd.AddCommand(newProcessCancelCmd())
 
 	return processCmd
+}
+
+func newProcessCmd() *cobra.Command {
+	cmd := newProcessVisibilityCmd()
+	cmd.Use = "process"
+	cmd.Hidden = true
+	cmd.Long = "DEPRECATED: use 'process-visibility' instead"
+	return cmd
 }
 
 func newProcessRetryStepCmd() *cobra.Command {

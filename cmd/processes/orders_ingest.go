@@ -2,9 +2,9 @@ package processes
 
 import "github.com/spf13/cobra"
 
-func newOrdersIngestCmd() *cobra.Command {
+func newOrderIngestCmd() *cobra.Command {
 	ordersIngestCmd := &cobra.Command{
-		Use:   "orders-ingest",
+		Use:   "order-ingest",
 		Short: "Business verbs for order ingest workflows",
 	}
 
@@ -15,6 +15,14 @@ func newOrdersIngestCmd() *cobra.Command {
 	ordersIngestCmd.AddCommand(newOrdersIngestSendToERPCmd())
 
 	return ordersIngestCmd
+}
+
+func newOrdersIngestCmd() *cobra.Command {
+	cmd := newOrderIngestCmd()
+	cmd.Use = "orders-ingest"
+	cmd.Hidden = true
+	cmd.Long = "DEPRECATED: use 'order-ingest' instead"
+	return cmd
 }
 
 func newOrdersIngestReprocessCmd() *cobra.Command {

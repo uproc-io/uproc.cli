@@ -2,9 +2,9 @@ package processes
 
 import "github.com/spf13/cobra"
 
-func newSigningCmd() *cobra.Command {
+func newDocumentSigningCmd() *cobra.Command {
 	signingCmd := &cobra.Command{
-		Use:   "signing",
+		Use:   "document-signing",
 		Short: "Business verbs for document signing workflows",
 	}
 
@@ -15,6 +15,14 @@ func newSigningCmd() *cobra.Command {
 	signingCmd.AddCommand(newSigningSyncStatusCmd())
 
 	return signingCmd
+}
+
+func newSigningCmd() *cobra.Command {
+	cmd := newDocumentSigningCmd()
+	cmd.Use = "signing"
+	cmd.Hidden = true
+	cmd.Long = "DEPRECATED: use 'document-signing' instead"
+	return cmd
 }
 
 func newSigningCancelCmd() *cobra.Command {

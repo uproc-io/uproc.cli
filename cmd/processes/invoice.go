@@ -2,9 +2,9 @@ package processes
 
 import "github.com/spf13/cobra"
 
-func newInvoiceCmd() *cobra.Command {
+func newInvoiceGeneratorCmd() *cobra.Command {
 	invoiceCmd := &cobra.Command{
-		Use:   "invoice",
+		Use:   "invoice-generator",
 		Short: "Business verbs for invoice generator workflows",
 	}
 
@@ -13,8 +13,20 @@ func newInvoiceCmd() *cobra.Command {
 	invoiceCmd.AddCommand(newInvoiceRectifyCmd())
 	invoiceCmd.AddCommand(newInvoiceSendCmd())
 	invoiceCmd.AddCommand(newInvoiceGetPDFCmd())
+	invoiceCmd.AddCommand(newInvoiceLinesAddCmd())
+	invoiceCmd.AddCommand(newCollectionListCmd("list-lines", "List invoice lines", "invoice-generator", "invoice_lines"))
+	invoiceCmd.AddCommand(newInvoiceLinesUpdateCmd())
+	invoiceCmd.AddCommand(newInvoiceLinesDeleteCmd())
 
 	return invoiceCmd
+}
+
+func newInvoiceCmd() *cobra.Command {
+	cmd := newInvoiceGeneratorCmd()
+	cmd.Use = "invoice"
+	cmd.Hidden = true
+	cmd.Long = "DEPRECATED: use 'invoice-generator' instead"
+	return cmd
 }
 
 func newInvoiceGetPDFCmd() *cobra.Command {
