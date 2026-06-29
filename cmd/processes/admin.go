@@ -649,22 +649,23 @@ func newAdminCustomersImportCmd() *cobra.Command {
 	var zipBase64 string
 	var mode string
 	var confirm bool
+	var zipFile string
+	var uploadID string
 
 	cmd := &cobra.Command{
 		Use:   "import",
-		Short: "Import customer data from a ZIP (base64 or file path)",
+		Short: "Import customer data from a ZIP (file, upload-id, or base64)",
 		Long: `Import ALL customer data from a previously exported ZIP file.
-The ZIP file content must be provided as a base64 string or via stdin.
-Default mode is "upsert" (insert or update existing records).
+Provide the ZIP via --file, --upload-id, or --zip-base64 (mutually exclusive).
+Default mode is "upsert" (insert or update existing records). Without --confirm the command shows a preview.
 
 Examples:
-  uproc admin customers import --zip-base64 "$(cat export.zip | base64)"
-  uproc admin customers import --zip-base64 "$(cat export.zip | base64)" --mode replace
-  cat export.zip | base64 | xargs -0 uproc admin customers import --mode upsert`,
+  uproc admin customers import --file export.zip
+  uproc admin customers import --file export.zip --mode replace --confirm
+  uproc admin customers import --upload-id imp_a1b2c3d4e5f6 --confirm
+  uproc admin customers import --zip-base64 "$(cat export.zip | base64)" --mode upsert --confirm
+  cat export.zip | base64 | xargs -0 uproc admin customers import --zip-base64 --confirm`,
 		RunE: func(cmd *cobra.Command, args []string) error {
-			if zipBase64 == "" {
-				return fmt.Errorf("--zip-base64 is required (use file path with --file or pipe base64 content)")
-			}
 			if mode == "" {
 				mode = "upsert"
 			}
@@ -674,13 +675,29 @@ Examples:
 				return err
 			}
 
+			argsMap := map[string]any{
+				"mode":    mode,
+				"confirm": confirm,
+			}
+
+			switch {
+			case zipFile != "":
+				content, readErr := os.ReadFile(zipFile)
+				if readErr != nil {
+					return fmt.Errorf("cannot read file %s: %w", zipFile, readErr)
+				}
+				argsMap["zip_base64"] = base64.StdEncoding.EncodeToString(content)
+			case uploadID != "":
+				argsMap["upload_id"] = uploadID
+			case zipBase64 != "":
+				argsMap["zip_base64"] = zipBase64
+			default:
+				return fmt.Errorf("one of --file, --upload-id, or --zip-base64 is required")
+			}
+
 			body, _ := json.Marshal(map[string]any{
-				"name": "admin.customer.import_all",
-				"arguments": map[string]any{
-					"zip_base64": zipBase64,
-					"mode":       mode,
-					"confirm":    confirm,
-				},
+				"name":      "admin.customer.import_all",
+				"arguments": argsMap,
 			})
 
 			respBody, status, reqErr := client.Do("POST", "/api/v1/external/mcp/call", body)
@@ -688,7 +705,9 @@ Examples:
 		},
 	}
 
-	cmd.Flags().StringVar(&zipBase64, "zip-base64", "", "ZIP file content as base64 string")
+	cmd.Flags().StringVarP(&zipFile, "file", "f", "", "ZIP file path to import")
+	cmd.Flags().StringVar(&uploadID, "upload-id", "", "Upload ID from upload-zip endpoint")
+	cmd.Flags().StringVar(&zipBase64, "zip-base64", "", "ZIP file content as base64 (alternative to --file / --upload-id)")
 	cmd.Flags().StringVar(&mode, "mode", "upsert", "Import mode: append, replace, or upsert")
 	cmd.Flags().BoolVar(&confirm, "confirm", false, "Confirm import execution (default false = preview only)")
 	return cmd
